@@ -72,6 +72,14 @@ st.markdown("""
     [data-testid="stIconMaterial"] { display: none !important; }
     .streamlit-expanderHeader::after { content: "›"; float: right; opacity: 0.4; font-size: 1rem; }
 
+    /* Dark mode overrides */
+    @media (prefers-color-scheme: dark) {
+        .block-container { color-scheme: dark; }
+    }
+    /* Use currentColor for text so it adapts to dark/light automatically */
+    .stMarkdown p { color: inherit !important; }
+    .stMarkdown div { color: inherit !important; }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -173,7 +181,7 @@ def _conf_bar(score: float, width: int = 72) -> str:
         f"<div style='flex:1;height:6px;background:#eef0f3;border-radius:3px;overflow:hidden;'>"
         f"<div style='width:{pct}%;height:100%;background:{color};border-radius:3px;"
         f"transition:width 0.3s ease;'></div></div>"
-        f"<span style='font-size:0.75rem;color:#888;min-width:2.2rem;text-align:right;'>{pct}%</span>"
+        f"<span style='font-size:0.75rem;color:inherit;min-width:2.2rem;text-align:right;'>{pct}%</span>"
         f"</div>"
     )
 
@@ -227,7 +235,7 @@ def render_posture(surfaced, background, recently_resolved):
     st.markdown(
         f"<div style='display:flex;align-items:flex-start;gap:0.5rem;"
         f"padding-bottom:0.9rem;margin-bottom:1rem;"
-        f"border-bottom:1px solid rgba(128,128,128,0.08);'>"
+        f"border-bottom:1px solid rgba(128,128,128,0.12);'>"
         f"<div style='width:6px;height:6px;border-radius:50%;background:{color};"
         f"flex-shrink:0;margin-top:0.35rem;'></div>"
         f"<div><span style='font-size:0.82rem;font-weight:600;color:{color};'>{label}</span>"
@@ -399,19 +407,19 @@ def render_consequences(cons):
     if not cons: return
     with st.expander("Why this recommendation", expanded=False):
         st.markdown(
-            f"<div style='font-size:0.82rem;color:#555;font-style:italic;"
+            f"<div style='font-size:0.82rem;color:inherit;font-style:italic;"
             f"margin-bottom:0.6rem;'>{cons.get('confidence_frame','')}</div>",
             unsafe_allow_html=True,
         )
         c1, c2 = st.columns(2)
         with c1:
             for k, label in [("expected_value","Expected value"),("time_sensitivity","Time sensitivity"),("wait_cost","Cost of waiting")]:
-                st.markdown(f"<div style='font-size:0.78rem;color:#888;margin-bottom:0.1rem;text-transform:uppercase;letter-spacing:0.05em;'>{label}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div style='font-size:0.83rem;color:#444;margin-bottom:0.5rem;'>{cons.get(k,'')}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:0.78rem;color:inherit;margin-bottom:0.1rem;text-transform:uppercase;letter-spacing:0.05em;'>{label}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:0.83rem;color:inherit;margin-bottom:0.5rem;'>{cons.get(k,'')}</div>", unsafe_allow_html=True)
         with c2:
             for k, label in [("blast_radius","Blast radius"),("inaction_risk","Risk of inaction"),("operator_burden","Operator burden")]:
-                st.markdown(f"<div style='font-size:0.78rem;color:#888;margin-bottom:0.1rem;text-transform:uppercase;letter-spacing:0.05em;'>{label}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div style='font-size:0.83rem;color:#444;margin-bottom:0.5rem;'>{cons.get(k,'')}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:0.78rem;color:inherit;margin-bottom:0.1rem;text-transform:uppercase;letter-spacing:0.05em;'>{label}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:0.83rem;color:inherit;margin-bottom:0.5rem;'>{cons.get(k,'')}</div>", unsafe_allow_html=True)
 
 
 def render_feedback(cluster_title: str):
@@ -493,9 +501,9 @@ def render_resolved(recently_resolved):
 with st.sidebar:
     # Brand
     st.markdown(
-        "<div style='font-size:1rem;font-weight:700;color:#111;letter-spacing:-0.01em;"
+        "<div style='font-size:1rem;font-weight:700;color:inherit;letter-spacing:-0.01em;"
         "margin-bottom:0.1rem;'>GrowthCopilot</div>"
-        "<div style='font-size:0.72rem;color:#aaa;margin-bottom:1rem;'>"
+        "<div style='font-size:0.72rem;color:inherit;margin-bottom:1rem;'>"
         "Operational intelligence</div>",
         unsafe_allow_html=True,
     )
@@ -510,7 +518,7 @@ with st.sidebar:
     if not st.session_state.get("user_events"):
     # Scenario group
         st.markdown(
-            "<div style='font-size:0.68rem;font-weight:600;color:#bbb;text-transform:uppercase;"
+            "<div style='font-size:0.68rem;font-weight:600;color:inherit;text-transform:uppercase;"
             "letter-spacing:0.08em;margin-bottom:0.4rem;'>Scenario</div>",
             unsafe_allow_html=True,
         )
@@ -526,9 +534,9 @@ with st.sidebar:
             st.rerun()
 
         st.markdown(
-            f"<div style='font-size:0.75rem;color:#777;margin-top:0.3rem;line-height:1.4;'>"
+            f"<div style='font-size:0.75rem;color:inherit;margin-top:0.3rem;line-height:1.4;'>"
             f"{arch['description']}</div>"
-            f"<div style='font-size:0.72rem;color:#aaa;margin-top:0.3rem;'>"
+            f"<div style='font-size:0.72rem;color:inherit;margin-top:0.3rem;'>"
             f"Key metric: {arch['key_metric']}</div>",
             unsafe_allow_html=True,
         )
@@ -544,14 +552,14 @@ with st.sidebar:
 col_title, col_date = st.columns([3, 2])
 with col_title:
     st.markdown(
-        f"<div style='font-size:1.3rem;font-weight:700;letter-spacing:-0.02em;color:#111;'>"
+        f"<div style='font-size:1.3rem;font-weight:700;letter-spacing:-0.02em;color:inherit;'>"
         f"GrowthCopilot</div>"
-        f"<div style='font-size:0.78rem;color:#aaa;margin-top:0.1rem;'>Daily Briefing</div>",
+        f"<div style='font-size:0.78rem;color:inherit;margin-top:0.1rem;'>Daily Briefing</div>",
         unsafe_allow_html=True,
     )
 with col_date:
     st.markdown(
-        f"<div style='text-align:right;font-size:0.78rem;color:#aaa;padding-top:0.3rem;'>"
+        f"<div style='text-align:right;font-size:0.78rem;color:inherit;padding-top:0.3rem;'>"
         f"{datetime.now().strftime('%A, %b %d')}<br>"
         f"{arch['emoji']} {arch['name']}</div>",
         unsafe_allow_html=True,
@@ -717,14 +725,14 @@ elif primary_cluster:
                 )
             else:
                 st.markdown(
-                    f"<div style='font-size:0.87rem;color:#1e293b;padding:0.3rem 0;"
+                    f"<div style='font-size:0.87rem;color:inherit;padding:0.3rem 0;"
                     f"border-left:2px solid #e2e8f0;padding-left:0.7rem;margin-bottom:0.25rem;'>"
                     f"{ins.summary} <span style='color:#94a3b8;'>{arrow}</span></div>",
                     unsafe_allow_html=True,
                 )
         else:
             st.markdown(
-                f"<div style='font-size:0.83rem;color:#475569;padding:0.2rem 0;"
+                f"<div style='font-size:0.83rem;color:inherit;padding:0.2rem 0;"
                 f"border-left:2px solid #f1f5f9;padding-left:0.6rem;margin-bottom:0.2rem;'>"
                 f"{ins.summary} <span style='color:#cbd5e1;'>{arrow}</span></div>",
                 unsafe_allow_html=True,
@@ -853,14 +861,14 @@ elif primary_cluster:
                 f"<div style='display:flex;align-items:center;gap:5px;font-size:0.7rem;font-weight:600;"
                 f"opacity:0.6;text-transform:uppercase;letter-spacing:0.08em;'>"
                 f"{_sev_dot(cluster['severity'])}{s_t}</div>"
-                f"<div style='font-size:0.88rem;font-weight:600;color:#222;margin:0.1rem 0;'>{cluster['title']}</div>"
+                f"<div style='font-size:0.88rem;font-weight:600;color:inherit;margin:0.1rem 0;'>{cluster['title']}</div>"
                 f"<div style='font-size:0.78rem;color:{s_color};'>{narrative}"
                 f"{'  ·  Recurred '+str(recur)+'x' if recur>0 else ''}</div>"
-                f"<div style='font-size:0.78rem;color:#888;margin-top:0.2rem;'>"
+                f"<div style='font-size:0.78rem;color:inherit;margin-top:0.2rem;'>"
                 f"{'  '.join(ins.summary+' '+sec_arrow for ins in cluster['insights'])}</div>"
                 f"<div style='font-size:0.8rem;color:{sec_dec['urgency_color']};font-weight:600;"
                 f"margin-top:0.3rem;'>{sec_dec['urgency_display']}: "
-                f"<span style='font-weight:400;color:#555;'>{sec_dec['action']}</span></div>"
+                f"<span style='font-weight:400;color:inherit;'>{sec_dec['action']}</span></div>"
                 f"</div>",
                 unsafe_allow_html=True,
             )

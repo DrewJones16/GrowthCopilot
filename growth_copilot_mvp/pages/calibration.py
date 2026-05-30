@@ -19,59 +19,9 @@ from growth_copilot_mvp.trust_engine import trust_summary
 
 st.set_page_config(page_title="GrowthCopilot — Calibration", page_icon=":wrench:", layout="wide")
 
-st.markdown("""
-<style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
-    .stMarkdown, .stText, button, input, select, textarea, p, div, span {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    }
-    .block-container { padding-top: 2.5rem !important; padding-bottom: 4rem !important; max-width: 720px !important; }
-    h1 { font-size: 1.35rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
-    h2 { font-size: 1.05rem !important; font-weight: 600 !important; letter-spacing: -0.01em; margin-top: 1.6rem !important; }
-    h3 { font-size: 0.93rem !important; font-weight: 600 !important; }
-    h4 { font-size: 0.85rem !important; font-weight: 600 !important; }
-    hr { border: none !important; border-top: 1px solid rgba(128,128,128,0.1) !important; margin: 1.8rem 0 !important; }
-    [data-testid="stExpander"] { border: 1px solid rgba(128,128,128,0.1) !important; border-radius: 10px !important; margin-bottom: 0.6rem !important; overflow: hidden !important; box-shadow: none !important; }
-    [data-testid="stExpander"]:hover { border-color: rgba(128,128,128,0.18) !important; }
-    .streamlit-expanderHeader { font-size: 0.78rem !important; font-weight: 500 !important; opacity: 0.6 !important; padding: 0.6rem 0.85rem !important; background: transparent !important; }
-    .streamlit-expanderContent { padding: 0.2rem 0.85rem 0.85rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.65rem !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.07em; opacity: 0.4 !important; }
-    [data-testid="stMetricValue"] { font-size: 1.25rem !important; font-weight: 600 !important; letter-spacing: -0.02em; }
-    .stButton > button { font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; font-weight: 500 !important; border-radius: 8px !important; transition: all 0.15s ease !important; }
-    .stButton > button[kind="primary"] { background-color: #1e293b !important; color: white !important; border: none !important; font-weight: 600 !important; }
-    .stButton > button[kind="primary"]:hover { background-color: #0f172a !important; }
-    section[data-testid="stSidebar"] { border-right: 1px solid rgba(128,128,128,0.1) !important; }
-    section[data-testid="stSidebar"] .block-container { padding: 1.5rem 1.1rem !important; }
-    [data-testid="stPageLink"] { border-radius: 6px !important; padding: 7px 9px !important; margin: 1px 0 !important; font-size: 0.83rem !important; }
-    [data-testid="stPageLink"] p { font-size: 0.83rem !important; }
-    .stRadio > div { gap: 0.2rem !important; }
-    .stRadio label { font-size: 0.79rem !important; }
-    .stSelectbox label { font-size: 0.72rem !important; opacity: 0.5 !important; }
-    .stToggle label { font-size: 0.8rem !important; }
-    .stCaption { font-size: 0.68rem !important; opacity: 0.38 !important; }
-    @keyframes pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(217,79,79,0.4); } 55% { box-shadow: 0 0 0 5px rgba(217,79,79,0); } }
-    .dot-pulse { animation: pulse-dot 2.4s ease-in-out infinite; }
-    [data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
-
-    .block-container { max-width: 1100px !important; }
-    /* Hide broken expand/collapse arrow icons */
-    [data-testid="stIconMaterial"] { display: none !important; }
-    /* Restore expander chevron via CSS */
-    .streamlit-expanderHeader::after {
-        content: "›";
-        float: right;
-        opacity: 0.4;
-        font-size: 1rem;
-        transition: transform 0.2s;
-    }
-</style>
-""", unsafe_allow_html=True)
-
 st.title("System Calibration Console")
 st.markdown(
-    "<div style='color:#888;font-size:0.85rem'>"
+    "<div style='color:inherit;font-size:0.85rem'>"
     "For builders — not the daily operational briefing. "
     "Evaluates detector reliability, confidence calibration, and alert quality."
     "</div>",
@@ -116,7 +66,7 @@ if all_signals:
                 f"Strength: {strength:.0f}/100 &nbsp; Avg conf: {avg_conf} &nbsp; Recurred: {recur}x"
             )
             if narrative:
-                st.markdown(f"<div style='font-size:0.8rem;color:#666;margin-left:1rem'>{narrative}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='font-size:0.8rem;color:inherit;margin-left:1rem'>{narrative}</div>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Detector weights
@@ -124,7 +74,7 @@ if all_signals:
 
 st.markdown("## Detector Weights")
 st.markdown(
-    "<div style='font-size:0.85rem;color:#888;margin-bottom:0.5rem'>"
+    "<div style='font-size:0.85rem;color:inherit;margin-bottom:0.5rem'>"
     "Current reliability weights applied during ranking. "
     "Will be replaced by empirical precision rates once outcome data accumulates."
     "</div>",
@@ -134,9 +84,9 @@ for det, info in detector_weight_report().items():
     color = "#2e7d32" if info["weight"] > 1.0 else "#f57c00" if info["weight"] < 1.0 else "#555"
     st.markdown(
         f"<div style='padding:0.4rem 0.8rem;border-left:3px solid {color};"
-        f"margin-bottom:0.3rem;background:#fafafa;'>"
+        f"margin-bottom:0.3rem;background:transparent;'>"
         f"<strong>`{det}`</strong> &nbsp; weight: <strong>{info['weight']}x</strong><br>"
-        f"<span style='font-size:0.82rem;color:#666;'>{info['note']}</span>"
+        f"<span style='font-size:0.82rem;color:inherit;'>{info['note']}</span>"
         f"</div>",
         unsafe_allow_html=True,
     )
@@ -147,7 +97,7 @@ for det, info in detector_weight_report().items():
 
 st.markdown("## Attention Architecture")
 st.markdown(
-    "<div style='font-size:0.85rem;color:#888;margin-bottom:0.5rem'>"
+    "<div style='font-size:0.85rem;color:inherit;margin-bottom:0.5rem'>"
     "Three-tier system: Surfaced (briefing) → Background (tracked) → Ephemeral (discarded)."
     "</div>",
     unsafe_allow_html=True,
@@ -172,7 +122,7 @@ if bg_signals:
     st.markdown("**Currently in background (below surface threshold):**")
     for r in bg_signals:
         st.markdown(
-            f"<div style='font-size:0.82rem;color:#888;padding:0.3rem 0.6rem;"
+            f"<div style='font-size:0.82rem;color:inherit;padding:0.3rem 0.6rem;"
             f"border-left:2px solid #ccc;margin-bottom:0.2rem;'>"
             f"{r.get('title','')} — strength {r.get('signal_strength',0):.0f}/100 "
             f"— {r.get('narrative','')}"
@@ -180,7 +130,7 @@ if bg_signals:
             unsafe_allow_html=True,
         )
 else:
-    st.markdown("<div style='font-size:0.82rem;color:#888;'>No background signals currently tracked.</div>",
+    st.markdown("<div style='font-size:0.82rem;color:inherit;'>No background signals currently tracked.</div>",
                 unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
@@ -219,7 +169,7 @@ if det_prec:
         n     = info["n_samples"]
         color = "#2e7d32" if (prec or 0) >= 0.8 else "#f57c00" if (prec or 0) >= 0.6 else "#c62828"
         note  = "" if info["reliable"] else f" ({info['min_for_reliable']-n} more needed)"
-        st.markdown(f"<div style='padding:0.3rem 0.8rem;border-left:3px solid {color};margin-bottom:0.3rem;background:#fafafa;font-size:0.85rem;'>`{det}` — precision: <strong>{(prec or 0)*100:.0f}%</strong> (n={n}{note})</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='padding:0.3rem 0.8rem;border-left:3px solid {color};margin-bottom:0.3rem;background:transparent;font-size:0.85rem;'>`{det}` — precision: <strong>{(prec or 0)*100:.0f}%</strong> (n={n}{note})</div>", unsafe_allow_html=True)
 
 st.markdown("### Signal trust status")
 all_sigs_trust = get_all_signals()
@@ -231,7 +181,7 @@ if all_sigs_trust:
         trust_level = ts.get("trust_level", "establishing")
         color = {"high": "#2e7d32", "moderate": "#f57c00", "low": "#c62828", "establishing": "#888"}.get(trust_level, "#888")
         notes_str = " · ".join(ts.get("notes", [])) if ts.get("notes") else "No trust signals yet"
-        st.markdown(f"<div style='padding:0.4rem 0.8rem;border-left:3px solid {color};margin-bottom:0.3rem;background:#fafafa;font-size:0.85rem;'><strong>{title}</strong> — trust: <strong style='color:{color}'>{trust_level}</strong> &nbsp; ignored: {ignored}x<br><span style='color:#666;font-size:0.8rem;'>{notes_str}</span></div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='padding:0.4rem 0.8rem;border-left:3px solid {color};margin-bottom:0.3rem;background:transparent;font-size:0.85rem;'><strong>{title}</strong> — trust: <strong style='color:{color}'>{trust_level}</strong> &nbsp; ignored: {ignored}x<br><span style='color:inherit;font-size:0.8rem;'>{notes_str}</span></div>", unsafe_allow_html=True)
 
 st.markdown("### Log outcome manually")
 all_sigs_log = get_all_signals()
@@ -280,7 +230,7 @@ if all_sigs_log:
 
 st.markdown("## Timeline Replay")
 st.markdown(
-    "<div style='font-size:0.85rem;color:#888;margin-bottom:0.8rem;'>"
+    "<div style='font-size:0.85rem;color:inherit;margin-bottom:0.8rem;'>"
     "Simulates N consecutive days. Watch signals emerge, escalate, and resolve over time."
     "</div>", unsafe_allow_html=True,
 )
@@ -332,7 +282,7 @@ if tl_data and tl_sum:
                   "wait_and_observe":"#1565c0","insufficient_evidence":"#888"}
 
     st.markdown(
-        f"<div style='padding:0.6rem 1rem;background:#fafafa;border-radius:6px;"
+        f"<div style='padding:0.6rem 1rem;background:transparent;border-radius:6px;"
         f"border-left:4px solid #1565c0;margin-bottom:0.5rem;'>"
         f"<strong>{snap['date']}</strong> &nbsp; Seed {snap['seed']} &nbsp; "
         f"Scenario: <strong>{SCENARIO_LABELS.get(snap['scenario'], snap['scenario'])}</strong>"
@@ -351,10 +301,10 @@ if tl_data and tl_sum:
         for c in snap["clusters"]:
             urg_color = URG_COLOR.get(c["urgency"], "#555")
             st.markdown(
-                f"<div style='padding:0.5rem 0.8rem;background:#fafafa;border-radius:5px;"
+                f"<div style='padding:0.5rem 0.8rem;background:transparent;border-radius:5px;"
                 f"border-left:3px solid {urg_color};margin-bottom:0.3rem;'>"
                 f"{SEV_EMOJI.get(c['severity'],'')} <strong>{c['title']}</strong> &nbsp;"
-                f"<span style='color:#888;font-size:0.8rem;'>"
+                f"<span style='color:inherit;font-size:0.8rem;'>"
                 f"Confidence: {c['confidence']} ({c['conf_label']}) &nbsp; "
                 f"Urgency: <span style='color:{urg_color};'>{c['urgency']}</span> &nbsp; "
                 f"Direction: {c['direction']}</span></div>", unsafe_allow_html=True,
@@ -376,8 +326,8 @@ if tl_data and tl_sum:
             color    = "#2e7d32" if strength >= 60 else "#f57c00" if strength >= 25 else "#ccc"
             st.markdown(
                 f"<div style='font-size:0.8rem;margin-bottom:0.2rem;'>"
-                f"<span style='color:#444;'>{title}</span> "
-                f"<span style='color:#888;font-size:0.75rem;'>{state['status']} · {state['days_active']}d</span><br>"
+                f"<span style='color:inherit;'>{title}</span> "
+                f"<span style='color:inherit;font-size:0.75rem;'>{state['status']} · {state['days_active']}d</span><br>"
                 f"<div style='height:4px;background:#eee;border-radius:2px;margin-top:2px;'>"
                 f"<div style='width:{bar_w}px;max-width:120px;height:100%;background:{color};border-radius:2px;'></div></div></div>",
                 unsafe_allow_html=True,
@@ -387,7 +337,7 @@ st.markdown("---")
 
 st.markdown("## Replay Evaluator")
 st.markdown(
-    "<div style='font-size:0.85rem;color:#888;margin-bottom:0.8rem'>"
+    "<div style='font-size:0.85rem;color:inherit;margin-bottom:0.8rem'>"
     "Runs N seeds through the full pipeline to score alert quality, "
     "confidence calibration, and detector reliability."
     "</div>",
