@@ -12,12 +12,10 @@ st.set_page_config(
 # Global CSS applied to every page
 st.markdown("""
 <style>
-    /* Hide broken sidebar collapse/expand button on all pages */
-    [data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
+    /* Hide broken icon text rendering */
     [data-testid="stIconMaterial"] { display: none !important; }
-    /* Keep sidebar always visible */
+    /* Keep sidebar always expanded */
     section[data-testid="stSidebar"] { display: block !important; }
-    [data-testid="collapsedControl"] { display: none !important; }
 </style>
 """, unsafe_allow_html=True)
 

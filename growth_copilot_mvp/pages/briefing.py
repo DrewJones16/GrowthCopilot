@@ -34,6 +34,10 @@ st.set_page_config(
 # ---------------------------------------------------------------------------
 # Global styles — clean operator console aesthetic
 # ---------------------------------------------------------------------------
+# Force sidebar open on every load
+if 'sidebar_initialized' not in st.session_state:
+    st.session_state['sidebar_initialized'] = True
+
 st.markdown("""
 <style>
 
@@ -59,8 +63,11 @@ st.markdown("""
     .stButton > button[kind="primary"]:hover { background-color: #0f172a !important; }
     section[data-testid="stSidebar"] { border-right: 1px solid rgba(128,128,128,0.1) !important; display: block !important; }
     section[data-testid="stSidebar"] .block-container { padding: 1.5rem 1.1rem !important; }
-    [data-testid="collapsedControl"] { display: none !important; }
-    section[data-testid="stSidebar"][aria-expanded="false"] { width: 21rem !important; transform: translateX(0) !important; }
+    /* Keep sidebar visible - don't hide collapsed control */
+    section[data-testid="stSidebar"][aria-expanded="false"] {
+        min-width: 21rem !important;
+        transform: none !important;
+    }
     [data-testid="stPageLink"] { border-radius: 6px !important; padding: 7px 9px !important; margin: 1px 0 !important; font-size: 0.83rem !important; }
     [data-testid="stPageLink"] p { font-size: 0.83rem !important; }
     .stRadio > div { gap: 0.2rem !important; }
