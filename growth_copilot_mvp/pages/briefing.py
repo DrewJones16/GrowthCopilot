@@ -539,17 +539,6 @@ with st.sidebar:
         if new_key != st.session_state.archetype_key:
             st.session_state.archetype_key = new_key
             st.session_state.seed = 8
-            # Clear signal registry so history doesn't bleed across archetypes
-            import json, os
-            try:
-                reg_path = os.path.join(
-                    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                    "data", "signal_registry.json"
-                )
-                with open(reg_path, 'w') as _f:
-                    json.dump({}, _f)
-            except Exception:
-                pass
             st.rerun()
 
         st.markdown(
@@ -664,7 +653,15 @@ elif primary_cluster:
     cons          = decision.get("consequences", {})
 
     # First-run welcome overlay
-    if not st.session_state.get("first_run_dismissed") and not st.session_state.get("user_events"):
+    # Show overlay only on true first visit — not after regenerate
+    _is_first_visit = (
+        not st.session_state.get("first_run_dismissed") and
+        not st.session_state.get("user_events") and
+        st.session_state.get("seed", 8) == 8 and
+        not st.session_state.get("demo_mode") and
+        st.session_state.get("_regen_count", 0) == 0
+    )
+    if _is_first_visit:
         st.markdown(
             "<div style='border-radius:10px;border:1px solid rgba(128,128,128,0.15);"
             "padding:1.4rem 1.5rem;margin-bottom:1.2rem;background:rgba(128,128,128,0.03);'>"
@@ -989,6 +986,7 @@ with col_btn:
             st.session_state["seed"] = _gds(_ns)
         else:
             st.session_state.seed += 1
+            st.session_state["_regen_count"] = st.session_state.get("_regen_count", 0) + 1
         st.rerun()
 with col_note:
     _dm2 = st.session_state.get("demo_mode", False)
@@ -1000,10 +998,8 @@ with col_note:
             src = st.session_state.get("user_data_source", "your data")
             n   = len(st.session_state["user_events"])
             _meta = f"{src} · {n:,} events"
-        elif st.session_state.get("demo_mode"):
-            _meta = f"demo · seed {st.session_state.seed} · switch archetype in sidebar"
         else:
-            _meta = ""
+            _meta = f"seed {st.session_state.seed} · ~55% inject regression · switch archetype in sidebar"
     st.markdown(
     f"<div style='font-family:ui-monospace,monospace;"
     f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
