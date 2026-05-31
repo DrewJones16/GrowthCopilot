@@ -930,7 +930,7 @@ elif primary_cluster:
     render_resolved(recently_resolved)
 
     # Pipeline details (very collapsed — for developers only)
-    if not st.session_state.get("user_events"):
+    if not st.session_state.get("user_events") and st.session_state.get("demo_mode"):
         with st.expander("System diagnostics", expanded=False):
             _surf = attn_report.get("surface_scores",{}).get(primary_cluster["title"],0)
             _rr   = f"{(_o_sum.get('signal_real_rate') or 0)*100:.0f}%" if _o_sum.get("total_outcomes",0)>0 else "—"
