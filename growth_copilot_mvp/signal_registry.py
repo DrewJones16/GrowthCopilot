@@ -17,6 +17,19 @@ _HERE     = os.path.dirname(os.path.abspath(__file__))
 _DATA_DIR = os.path.join(_HERE, "data")
 _REGISTRY = os.path.join(_DATA_DIR, "signal_registry.json")
 
+# Current archetype key — set via set_archetype() before running pipeline
+_CURRENT_ARCHETYPE = ""
+
+def set_archetype(key: str) -> None:
+    """Set the current archetype so registry is namespaced correctly."""
+    global _CURRENT_ARCHETYPE
+    _CURRENT_ARCHETYPE = key
+
+def _current_registry_path() -> str:
+    if _CURRENT_ARCHETYPE:
+        return os.path.join(_DATA_DIR, f"registry_{_CURRENT_ARCHETYPE}.json")
+    return _REGISTRY
+
 _MAX_HISTORY   = 30
 STABILIZE_DAYS = 3
 ESCALATE_DAYS  = 5
@@ -36,10 +49,11 @@ def _today() -> str:
 
 
 def _load() -> Dict:
-    if not os.path.exists(_REGISTRY):
+    path = _current_registry_path()
+    if not os.path.exists(path):
         return {}
     try:
-        with open(_REGISTRY, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except (json.JSONDecodeError, IOError):
         return {}
@@ -47,7 +61,7 @@ def _load() -> Dict:
 
 def _save(registry: Dict) -> None:
     os.makedirs(_DATA_DIR, exist_ok=True)
-    with open(_REGISTRY, "w", encoding="utf-8") as f:
+    with open(_current_registry_path(), "w", encoding="utf-8") as f:
         json.dump(registry, f, indent=2)
 
 

@@ -10,6 +10,7 @@ from growth_copilot_mvp.trend_memory import attach_trend
 from growth_copilot_mvp.causal_engine import find_causal_links, primary_hypothesis
 from growth_copilot_mvp.decision_engine import make_decision, get_editorial_observation
 from growth_copilot_mvp.attention import classify_clusters, attention_report, background_summary
+from growth_copilot_mvp.signal_registry import set_archetype
 from growth_copilot_mvp.signal_registry import (
     update_signal, check_resolutions,
     get_recently_resolved, registry_summary, outcome_summary,
@@ -582,6 +583,9 @@ if 'seed' not in st.session_state:
     st.session_state['seed'] = 8
 if 'archetype_key' not in st.session_state:
     st.session_state['archetype_key'] = 'consumer_social'
+
+# Namespace registry by archetype so history doesn't bleed across company types
+set_archetype(st.session_state.get('archetype_key', 'consumer_social'))
 
 _active_seed = st.session_state.seed
 if st.session_state.get('demo_mode'):
