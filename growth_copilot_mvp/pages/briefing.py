@@ -457,6 +457,66 @@ def render_feedback(cluster_title: str):
                 st.rerun()
 
 
+def render_first_run_overlay():
+    """Show a one-time welcome overlay on first visit."""
+    if st.session_state.get("first_run_dismissed"):
+        return
+
+    st.markdown(
+        "<div style='border-radius:10px;border:1px solid rgba(128,128,128,0.15);"
+        "padding:1.4rem 1.5rem;margin-bottom:1.2rem;"
+        "background:rgba(128,128,128,0.03);'>"
+
+        # Header
+        "<div style='font-size:1rem;font-weight:700;letter-spacing:-0.02em;"
+        "margin-bottom:0.5rem;'>Welcome to GrowthCopilot</div>"
+
+        # What they're looking at
+        "<div style='font-size:0.83rem;opacity:0.6;line-height:1.65;"
+        "margin-bottom:1rem;max-width:540px;'>"
+        "You're looking at a simulated product intelligence briefing. "
+        "The system has detected a signal in synthetic data and is recommending action — "
+        "exactly as it would with your real analytics."
+        "</div>"
+
+        # Two actions
+        "<div style='display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;"
+        "margin-bottom:1rem;'>"
+
+        # Action 1
+        "<div style='padding:0.75rem 0.9rem;border-radius:8px;"
+        "border:1px solid rgba(128,128,128,0.15);'>"
+        "<div style='font-size:0.72rem;font-weight:600;opacity:0.5;"
+        "text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.25rem;'>"
+        "See the full story</div>"
+        "<div style='font-size:0.8rem;opacity:0.65;line-height:1.5;'>"
+        "Enable <strong>Follow the story</strong> in the sidebar "
+        "to walk through a 28-day escalation arc step by step.</div>"
+        "</div>"
+
+        # Action 2
+        "<div style='padding:0.75rem 0.9rem;border-radius:8px;"
+        "border:1px solid rgba(128,128,128,0.15);'>"
+        "<div style='font-size:0.72rem;font-weight:600;opacity:0.5;"
+        "text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.25rem;'>"
+        "Try your own data</div>"
+        "<div style='font-size:0.8rem;opacity:0.65;line-height:1.5;'>"
+        "Click <strong>Connect Your Data</strong> in the sidebar "
+        "to upload a CSV from Mixpanel or Amplitude.</div>"
+        "</div>"
+
+        "</div></div>",
+        unsafe_allow_html=True,
+    )
+
+    col_dismiss, col_spacer = st.columns([1, 3])
+    with col_dismiss:
+        if st.button("Got it, show me the briefing", type="primary",
+                     use_container_width=True, key="dismiss_first_run"):
+            st.session_state["first_run_dismissed"] = True
+            st.rerun()
+
+
 def render_resolved(recently_resolved):
     if not recently_resolved: return
     st.markdown(
@@ -530,7 +590,7 @@ with st.sidebar:
         new_key = archetype_from_display(selected_display)
         if new_key != st.session_state.archetype_key:
             st.session_state.archetype_key = new_key
-            st.session_state.seed = 8
+            st.session_state.seed = 42
             st.rerun()
 
         st.markdown(
@@ -569,12 +629,6 @@ with col_date:
 # ---------------------------------------------------------------------------
 # Pipeline
 # ---------------------------------------------------------------------------
-
-# Set default seed on first load
-if 'seed' not in st.session_state:
-    st.session_state['seed'] = 8
-if 'archetype_key' not in st.session_state:
-    st.session_state['archetype_key'] = 'consumer_social'
 
 _active_seed = st.session_state.seed
 if st.session_state.get('demo_mode'):
@@ -645,29 +699,17 @@ elif primary_cluster:
     decision      = all_decisions[clustered.index(primary_cluster)]
     cons          = decision.get("consequences", {})
 
-    # Data source banner — always visible
+    # Show banner when using real data
     if st.session_state.get("user_events"):
         src = st.session_state.get("user_data_source", "CSV")
         n   = len(st.session_state["user_events"])
         st.markdown(
-            f"<div style='font-size:0.71rem;margin-bottom:0.8rem;"
-            f"padding:0.35rem 0.7rem;border-radius:6px;"
+            f"<div style='font-size:0.72rem;opacity:0.45;margin-bottom:0.8rem;"
+            f"padding:0.4rem 0.7rem;border-radius:6px;"
             f"border:1px solid rgba(22,163,74,0.2);background:rgba(22,163,74,0.04);'>"
             f"<span style='color:#16a34a;font-weight:600;'>Your data</span>"
-            f" &nbsp;·&nbsp; {src} &nbsp;·&nbsp; {n:,} events"
-            f"</div>",
-            unsafe_allow_html=True,
-        )
-    else:
-        st.markdown(
-            "<div style='font-size:0.71rem;opacity:0.38;margin-bottom:0.8rem;"
-            "padding:0.35rem 0.7rem;border-radius:6px;"
-            "border:1px solid rgba(128,128,128,0.12);"
-            "display:flex;justify-content:space-between;align-items:center;'>"
-            "<span>Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative</span>"
-            "<a href='/connect' style='opacity:0.6;font-size:0.68rem;text-decoration:none;'>"
-            "Connect your data →</a>"
-            "</div>",
+            f" · {src} · {n:,} events"
+            f" · <a href='#' style='color:inherit;opacity:0.6;'>change</a></div>",
             unsafe_allow_html=True,
         )
 
