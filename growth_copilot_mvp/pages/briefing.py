@@ -530,7 +530,7 @@ with st.sidebar:
         new_key = archetype_from_display(selected_display)
         if new_key != st.session_state.archetype_key:
             st.session_state.archetype_key = new_key
-            st.session_state.seed = 42
+            st.session_state.seed = 8
             st.rerun()
 
         st.markdown(
@@ -569,6 +569,12 @@ with col_date:
 # ---------------------------------------------------------------------------
 # Pipeline
 # ---------------------------------------------------------------------------
+
+# Set default seed on first load
+if 'seed' not in st.session_state:
+    st.session_state['seed'] = 8
+if 'archetype_key' not in st.session_state:
+    st.session_state['archetype_key'] = 'consumer_social'
 
 _active_seed = st.session_state.seed
 if st.session_state.get('demo_mode'):
@@ -639,17 +645,29 @@ elif primary_cluster:
     decision      = all_decisions[clustered.index(primary_cluster)]
     cons          = decision.get("consequences", {})
 
-    # Show banner when using real data
+    # Data source banner — always visible
     if st.session_state.get("user_events"):
         src = st.session_state.get("user_data_source", "CSV")
         n   = len(st.session_state["user_events"])
         st.markdown(
-            f"<div style='font-size:0.72rem;opacity:0.45;margin-bottom:0.8rem;"
-            f"padding:0.4rem 0.7rem;border-radius:6px;"
+            f"<div style='font-size:0.71rem;margin-bottom:0.8rem;"
+            f"padding:0.35rem 0.7rem;border-radius:6px;"
             f"border:1px solid rgba(22,163,74,0.2);background:rgba(22,163,74,0.04);'>"
             f"<span style='color:#16a34a;font-weight:600;'>Your data</span>"
-            f" · {src} · {n:,} events"
-            f" · <a href='#' style='color:inherit;opacity:0.6;'>change</a></div>",
+            f" &nbsp;·&nbsp; {src} &nbsp;·&nbsp; {n:,} events"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            "<div style='font-size:0.71rem;opacity:0.38;margin-bottom:0.8rem;"
+            "padding:0.35rem 0.7rem;border-radius:6px;"
+            "border:1px solid rgba(128,128,128,0.12);"
+            "display:flex;justify-content:space-between;align-items:center;'>"
+            "<span>Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative</span>"
+            "<a href='/connect' style='opacity:0.6;font-size:0.68rem;text-decoration:none;'>"
+            "Connect your data →</a>"
+            "</div>",
             unsafe_allow_html=True,
         )
 
