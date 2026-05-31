@@ -692,17 +692,16 @@ elif primary_cluster:
             unsafe_allow_html=True,
         )
     else:
-        st.markdown(
-            "<div style='font-size:0.71rem;opacity:0.35;margin-bottom:0.8rem;"
-            "padding:0.35rem 0.7rem;border-radius:6px;"
-            "border:1px solid rgba(128,128,128,0.12);"
-            "display:flex;justify-content:space-between;align-items:center;'>"
-            "<span>Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative</span>"
-            "<a href='/connect' style='opacity:0.5;font-size:0.68rem;text-decoration:none;'>"
-            "Connect your data →</a>"
-            "</div>",
-            unsafe_allow_html=True,
-        )
+        col_demo, col_link = st.columns([5, 1])
+        with col_demo:
+            st.markdown(
+                "<div style='font-size:0.71rem;opacity:0.35;padding:0.55rem 0;'>"
+                "Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative"
+                "</div>",
+                unsafe_allow_html=True,
+            )
+        with col_link:
+            st.page_link("pages/connect.py", label="Connect data →")
 
     render_posture(surfaced_clusters, background_clusters, recently_resolved)
 
