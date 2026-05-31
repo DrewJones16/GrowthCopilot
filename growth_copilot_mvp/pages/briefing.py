@@ -52,6 +52,8 @@ st.markdown("""
     [data-testid="stExpander"]:hover { border-color: rgba(128,128,128,0.18) !important; }
     .streamlit-expanderHeader { font-size: 0.78rem !important; font-weight: 500 !important; opacity: 0.6 !important; padding: 0.6rem 0.85rem !important; background: transparent !important; }
     .streamlit-expanderContent { padding: 0.2rem 0.85rem 0.85rem !important; }
+    [data-testid="stExpanderToggleIcon"] { display: none !important; }
+    [data-testid="stExpander"] details summary { padding-left: 0.85rem !important; }
     /* Remove gap/indent in expander headers */
     [data-testid="stExpander"] summary { padding-left: 0.85rem !important; }
     [data-testid="stExpander"] summary svg { display: none !important; }
@@ -697,16 +699,13 @@ elif primary_cluster:
         )
     else:
         st.markdown(
-            "<div style='font-size:0.71rem;opacity:0.35;margin-bottom:0.8rem;"
-            "padding:0.35rem 0.7rem;border-radius:6px;"
-            "border:1px solid rgba(128,128,128,0.12);"
-            "display:flex;justify-content:space-between;align-items:center;'>"
-            "<span>Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative</span>"
-            "<a href='/connect' style='opacity:0.5;font-size:0.68rem;text-decoration:none;'>"
-            "Connect your data →</a>"
+            "<div style='font-size:0.71rem;opacity:0.35;margin-bottom:0.3rem;'>"
+            "Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative"
             "</div>",
             unsafe_allow_html=True,
         )
+        st.page_link("pages/connect.py", label="Connect your data →")
+        st.markdown("<div style='margin-bottom:0.5rem;'></div>", unsafe_allow_html=True)
 
     render_posture(surfaced_clusters, background_clusters, recently_resolved)
 
