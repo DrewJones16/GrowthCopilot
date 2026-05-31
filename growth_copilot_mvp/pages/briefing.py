@@ -539,6 +539,17 @@ with st.sidebar:
         if new_key != st.session_state.archetype_key:
             st.session_state.archetype_key = new_key
             st.session_state.seed = 8
+            # Clear signal registry so history doesn't bleed across archetypes
+            import json, os
+            try:
+                reg_path = os.path.join(
+                    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                    "data", "signal_registry.json"
+                )
+                with open(reg_path, 'w') as _f:
+                    json.dump({}, _f)
+            except Exception:
+                pass
             st.rerun()
 
         st.markdown(
@@ -989,8 +1000,10 @@ with col_note:
             src = st.session_state.get("user_data_source", "your data")
             n   = len(st.session_state["user_events"])
             _meta = f"{src} · {n:,} events"
+        elif st.session_state.get("demo_mode"):
+            _meta = f"demo · seed {st.session_state.seed} · switch archetype in sidebar"
         else:
-            _meta = f"seed {st.session_state.seed} · ~55% inject regression · switch archetype in sidebar"
+            _meta = ""
     st.markdown(
     f"<div style='font-family:ui-monospace,monospace;"
     f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
