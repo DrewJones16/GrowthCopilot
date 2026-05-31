@@ -584,7 +584,8 @@ if 'archetype_key' not in st.session_state:
     st.session_state['archetype_key'] = 'consumer_social'
 
 # Namespace registry by archetype so history doesn't bleed across company types
-set_archetype(st.session_state.get('archetype_key', 'consumer_social'))
+import growth_copilot_mvp.signal_registry as _sr_mod
+_sr_mod._CURRENT_ARCHETYPE = st.session_state.get('archetype_key', 'consumer_social')
 
 _active_seed = st.session_state.seed
 if st.session_state.get('demo_mode'):
