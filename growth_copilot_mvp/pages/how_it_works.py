@@ -1,235 +1,219 @@
-"""pages/how_it_works.py — product pitch page, not documentation."""
+"""pages/how_it_works.py — product explainer page."""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import streamlit as st
 
-st.set_page_config(
-    page_title="GrowthCopilot — How It Works",
-    page_icon="💡",
-    layout="centered",
-)
+st.set_page_config(page_title="GrowthCopilot — How It Works", page_icon=":bulb:", layout="centered")
 
-st.markdown("""
-<style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap');
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
-    .stMarkdown, .stText, button, input, select, textarea, p, div, span {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    }
-    .block-container { padding-top: 2.5rem !important; padding-bottom: 4rem !important; max-width: 720px !important; }
-    h1 { font-size: 1.35rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
-    h2 { font-size: 1.05rem !important; font-weight: 600 !important; letter-spacing: -0.01em; margin-top: 1.6rem !important; }
-    h3 { font-size: 0.93rem !important; font-weight: 600 !important; }
-    h4 { font-size: 0.85rem !important; font-weight: 600 !important; }
-    hr { border: none !important; border-top: 1px solid rgba(128,128,128,0.1) !important; margin: 1.8rem 0 !important; }
-    [data-testid="stExpander"] { border: 1px solid rgba(128,128,128,0.1) !important; border-radius: 10px !important; margin-bottom: 0.6rem !important; overflow: hidden !important; box-shadow: none !important; }
-    [data-testid="stExpander"]:hover { border-color: rgba(128,128,128,0.18) !important; }
-    .streamlit-expanderHeader { font-size: 0.78rem !important; font-weight: 500 !important; opacity: 0.6 !important; padding: 0.6rem 0.85rem !important; background: transparent !important; }
-    .streamlit-expanderContent { padding: 0.2rem 0.85rem 0.85rem !important; }
-    [data-testid="stMetricLabel"] { font-size: 0.65rem !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.07em; opacity: 0.4 !important; }
-    [data-testid="stMetricValue"] { font-size: 1.25rem !important; font-weight: 600 !important; letter-spacing: -0.02em; }
-    .stButton > button { font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; font-weight: 500 !important; border-radius: 8px !important; transition: all 0.15s ease !important; }
-    .stButton > button[kind="primary"] { background-color: #1e293b !important; color: white !important; border: none !important; font-weight: 600 !important; }
-    .stButton > button[kind="primary"]:hover { background-color: #0f172a !important; }
-    section[data-testid="stSidebar"] { border-right: 1px solid rgba(128,128,128,0.1) !important; }
-    section[data-testid="stSidebar"] .block-container { padding: 1.5rem 1.1rem !important; }
-    [data-testid="stPageLink"] { border-radius: 6px !important; padding: 7px 9px !important; margin: 1px 0 !important; font-size: 0.83rem !important; }
-    [data-testid="stPageLink"] p { font-size: 0.83rem !important; }
-    .stRadio > div { gap: 0.2rem !important; }
-    .stRadio label { font-size: 0.79rem !important; }
-    .stSelectbox label { font-size: 0.72rem !important; opacity: 0.5 !important; }
-    .stToggle label { font-size: 0.8rem !important; }
-    .stCaption { font-size: 0.68rem !important; opacity: 0.38 !important; }
-    @keyframes pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(217,79,79,0.4); } 55% { box-shadow: 0 0 0 5px rgba(217,79,79,0); } }
-    .dot-pulse { animation: pulse-dot 2.4s ease-in-out infinite; }
-    [data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
-    [data-testid="stIconMaterial"] { display: none !important; }
-    .streamlit-expanderHeader::after { content: "›"; float: right; opacity: 0.4; font-size: 1rem; }
-
-    /* How It Works overrides */
-    .block-container { max-width: 700px !important; padding-top: 3rem !important; }
-    hr { border: none !important; border-top: 1px solid rgba(128,128,128,0.1) !important; margin: 2rem 0 !important; }
-</style>
-""", unsafe_allow_html=True)
-
-# ── Hero ──────────────────────────────────────────────────────────────────
+st.title("How GrowthCopilot Works")
 st.markdown(
-    "<div style='padding:1rem 0 2.5rem;'>"
-    "<div style='font-size:0.72rem;font-weight:600;opacity:0.35;"
-    "text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.8rem;'>"
-    "GrowthCopilot</div>"
-    "<div style='font-size:2rem;font-weight:700;letter-spacing:-0.035em;"
-    "line-height:1.2;margin-bottom:1rem;'>"
-    "Watches your telemetry<br>like an experienced operator.</div>"
-    "<div style='font-size:1rem;opacity:0.5;line-height:1.7;max-width:520px;'>"
-    "Most analytics tools tell you what happened.<br>"
-    "GrowthCopilot tells you what to do about it — and explains "
-    "the tradeoffs clearly enough that you can disagree."
-    "</div></div>",
+    "<div style='color:#888;font-size:0.85rem;margin-bottom:1.5rem;'>"
+    "An operational intelligence system for product and growth teams."
+    "</div>",
     unsafe_allow_html=True,
 )
 
-st.markdown("<hr>", unsafe_allow_html=True)
-
-# ── The contrast ──────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# The core idea
+# ---------------------------------------------------------------------------
+st.markdown("## The core idea")
 st.markdown(
-    "<div style='font-size:0.65rem;font-weight:600;opacity:0.35;"
-    "text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.2rem;'>"
-    "The difference</div>",
+    "<div style='padding:1rem;background:#f0f4ff;border-radius:8px;"
+    "border-left:4px solid #1565c0;margin-bottom:1rem;'>"
+    "<div style='font-size:0.95rem;color:#444;line-height:1.6;'>"
+    "Most analytics tools tell you <strong>what happened</strong>.<br>"
+    "GrowthCopilot tells you <strong>what to do about it</strong> — "
+    "and explains the tradeoffs clearly enough that you can disagree."
+    "</div></div>",
     unsafe_allow_html=True,
 )
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown(
-        "<div style='padding:1rem 1.1rem;border-radius:8px;"
-        "border:1px solid rgba(128,128,128,0.12);height:100%;'>"
-        "<div style='font-size:0.65rem;font-weight:600;opacity:0.35;"
-        "text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;'>"
-        "Other tools</div>"
-        "<div style='font-size:0.85rem;opacity:0.45;line-height:2;font-family:ui-monospace,monospace;'>"
-        "TikTok conversion: −18%<br>"
-        "Install volume: +34%<br>"
-        "Onboarding complete: −12%<br>"
-        "D1 retention: −8%<br>"
-        "DAU: −4%"
-        "</div>"
-        "<div style='font-size:0.75rem;opacity:0.3;margin-top:0.8rem;font-style:italic;'>"
-        "You figure out the rest."
-        "</div></div>",
-        unsafe_allow_html=True,
-    )
+    st.markdown("**Other analytics tools**")
+    for line in [
+        "TikTok conversion: -18%",
+        "Install volume: +34%",
+        "Onboarding complete: -12%",
+        "D1 retention: -8%",
+    ]:
+        st.markdown(f"<div style='font-size:0.85rem;color:#888;padding:0.2rem 0;'>📊 {line}</div>",
+                    unsafe_allow_html=True)
+
 with col2:
+    st.markdown("**GrowthCopilot**")
     st.markdown(
-        "<div style='padding:1rem 1.1rem;border-radius:8px;"
-        "border:1px solid rgba(128,128,128,0.15);height:100%;'>"
-        "<div style='font-size:0.65rem;font-weight:600;opacity:0.35;"
-        "text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;'>"
-        "GrowthCopilot</div>"
-        "<div style='font-size:0.82rem;opacity:0.75;line-height:1.6;margin-bottom:0.6rem;'>"
-        "Two independent detectors agree: TikTok activation quality is "
-        "deteriorating at the funnel step, not install volume. Consistent "
-        "with a creative or onboarding change."
-        "</div>"
-        "<div style='font-size:0.82rem;font-weight:600;opacity:0.85;"
-        "padding:0.5rem 0.7rem;border-radius:6px;"
-        "background:rgba(217,79,79,0.06);border:1px solid rgba(217,79,79,0.2);'>"
-        "Reduce TikTok spend. Audit the onboarding_complete → first_action step."
-        "</div></div>",
+        "<div style='font-size:0.85rem;color:#444;background:#fafafa;"
+        "border-left:3px solid #c62828;padding:0.6rem 0.8rem;border-radius:4px;'>"
+        "🔴 <strong>TikTok activation failure</strong><br>"
+        "<span style='color:#666;'>Worsening 7 days. Likely onboarding bug.</span><br>"
+        "<span style='color:#c62828;font-size:0.8rem;'>→ Reduce spend + audit deploy</span>"
+        "</div>",
         unsafe_allow_html=True,
     )
 
-st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown("---")
 
-# ── How it thinks ─────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# The 6-layer architecture
+# ---------------------------------------------------------------------------
+st.markdown("## The 6-layer architecture")
 st.markdown(
-    "<div style='font-size:0.65rem;font-weight:600;opacity:0.35;"
-    "text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.2rem;'>"
-    "How it thinks</div>",
-    unsafe_allow_html=True,
-)
-
-layers = [
-    ("Detects",    "Three independent detectors watch for funnel drops, cohort divergence, and volume anomalies. They're deliberately decorrelated — disagreement between them is informative, not a bug."),
-    ("Remembers",  "Every signal carries its full operational history: when it first appeared, how it escalated, whether it recurred, and how it resolved. The system knows if it's seen this before."),
-    ("Prioritises","A three-tier attention system decides what reaches the briefing (surfaced), what's tracked silently (background), and what's discarded (noise). Not everything gets your attention."),
-    ("Reasons",    "Every recommendation includes: expected value, blast radius, time sensitivity, cost of waiting, risk of inaction, operator burden. The system explains tradeoffs, not just conclusions."),
-    ("Learns",     "Operators record whether signals were real and recommendations were useful. Over time, false positive patterns are recognised and confidence calibrates to actual outcomes."),
-    ("Restrains",  "Signals ignored repeatedly get urgency downgraded. Chronic unresolved patterns lose escalation priority. The system becomes more cautious when history suggests caution."),
-]
-
-for i, (title, desc) in enumerate(layers):
-    connector = "" if i == len(layers)-1 else (
-        "<div style='width:1px;height:16px;background:rgba(128,128,128,0.15);"
-        "margin-left:11px;'></div>"
-    )
-    st.markdown(
-        f"<div style='display:flex;gap:1rem;align-items:flex-start;margin-bottom:0;'>"
-        f"<div style='flex-shrink:0;padding-top:2px;'>"
-        f"<div style='width:22px;height:22px;border-radius:50%;"
-        f"border:1.5px solid rgba(128,128,128,0.25);"
-        f"display:flex;align-items:center;justify-content:center;"
-        f"font-size:0.6rem;font-weight:700;opacity:0.5;'>{i+1}</div>"
-        f"</div>"
-        f"<div style='padding-bottom:0.9rem;'>"
-        f"<div style='font-size:0.88rem;font-weight:600;margin-bottom:0.15rem;'>{title}</div>"
-        f"<div style='font-size:0.8rem;opacity:0.5;line-height:1.55;'>{desc}</div>"
-        f"</div></div>"
-        f"{connector}",
-        unsafe_allow_html=True,
-    )
-
-st.markdown("<hr>", unsafe_allow_html=True)
-
-# ── The demo arc ──────────────────────────────────────────────────────────
-st.markdown(
-    "<div style='font-size:0.65rem;font-weight:600;opacity:0.35;"
-    "text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.2rem;'>"
-    "A 28-day operational story</div>",
-    unsafe_allow_html=True,
-)
-st.markdown(
-    "<div style='font-size:0.82rem;opacity:0.45;margin-bottom:1.4rem;max-width:500px;'>"
-    "Enable demo mode in the sidebar. Watch an escalation emerge, persist, and resolve. "
-    "Each step shows a different capability of the system."
+    "<div style='font-size:0.85rem;color:#888;margin-bottom:0.8rem;'>"
+    "Each layer builds on the previous. Most analytics systems stop at Layer 1."
     "</div>",
     unsafe_allow_html=True,
 )
 
-arc_steps = [
-    ("Day 1",  "All clear",              "The system is silent. No metric has crossed the confidence threshold."),
-    ("Day 5",  "Something stirs",        "A single detector notices a mild signal. Confidence is low — the system watches, doesn't act."),
-    ("Day 9",  "Two detectors agree",    "A second independent detector fires. Urgency rises from observe to act."),
-    ("Day 14", "Escalation",             "Immediate action recommended. Spend reduction and funnel audit."),
-    ("Day 16", "The system remembers",   "Prior occurrences surface. Resolution patterns, recurrence history, trust notes."),
-    ("Day 19", "Recovery",               "Signal shifts direction. Intervention risk now exceeds inaction risk."),
-    ("Day 23", "Stabilizing",            "De-escalating to monitor mode. Waiting for confirmation."),
-    ("Day 28", "Resolution",             "Signal resolved. System returns to silence. Outcome logged."),
+layers = [
+    ("1", "Perception",  "#1565c0", "Detectors",
+     "Three independent detectors watch for funnel drops, cohort divergence, and volume anomalies. "
+     "Decorrelated thresholds so they don't always agree — disagreement is a feature, not a bug."),
+    ("2", "Cognition",   "#1976d2", "Clustering + Memory",
+     "Related signals are grouped into coherent situations. The system remembers each signal's "
+     "full history: when it first appeared, how it escalated, whether it recurred, and how it resolved."),
+    ("3", "Attention",   "#0288d1", "Surfacing + Suppression",
+     "A three-tier architecture decides what reaches the briefing (Surfaced), what's tracked "
+     "silently (Background), and what's discarded (Ephemeral). Attention is a finite resource."),
+    ("4", "Decisioning", "#0097a7", "Consequence Modeling",
+     "Every recommendation includes: expected value, blast radius, time sensitivity, cost of "
+     "waiting, risk of inaction, and operator burden. The system explains tradeoffs, not just conclusions."),
+    ("5", "Learning",    "#00897b", "Outcome Feedback",
+     "Operators record whether alerts were real and recommendations were useful. Over time, "
+     "detector weights become empirical, false positive patterns are recognized, and confidence calibrates."),
+    ("6", "Trust",       "#2e7d32", "Adaptive Restraint",
+     "Signals ignored repeatedly get their urgency downgraded. Chronic unresolved patterns lose "
+     "escalation priority. The system becomes more cautious when history suggests caution."),
 ]
 
-for day, label, desc in arc_steps:
+for num, name, color, subtitle, desc in layers:
     st.markdown(
-        f"<div style='display:flex;gap:1rem;margin-bottom:0.55rem;align-items:baseline;'>"
-        f"<div style='font-size:0.68rem;font-weight:600;opacity:0.3;min-width:44px;"
-        f"font-family:ui-monospace,monospace;'>{day}</div>"
+        f"<div style='display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start;'>"
+        f"<div style='min-width:2rem;height:2rem;background:{color};color:white;"
+        f"border-radius:50%;display:flex;align-items:center;justify-content:center;"
+        f"font-weight:700;font-size:0.9rem;flex-shrink:0;'>{num}</div>"
         f"<div>"
-        f"<span style='font-size:0.82rem;font-weight:600;opacity:0.8;'>{label}</span>"
-        f"<span style='font-size:0.79rem;opacity:0.4;'> — {desc}</span>"
+        f"<div style='font-weight:600;color:#333;'>{name} <span style='color:#888;"
+        f"font-weight:400;font-size:0.85rem;'>— {subtitle}</span></div>"
+        f"<div style='font-size:0.85rem;color:#555;margin-top:0.2rem;'>{desc}</div>"
         f"</div></div>",
         unsafe_allow_html=True,
     )
 
-st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown("---")
 
-# ── What makes it different ───────────────────────────────────────────────
-st.markdown(
-    "<div style='font-size:0.65rem;font-weight:600;opacity:0.35;"
-    "text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.2rem;'>"
-    "What makes it different</div>",
-    unsafe_allow_html=True,
-)
+# ---------------------------------------------------------------------------
+# What you see in the briefing
+# ---------------------------------------------------------------------------
+st.markdown("## What the daily briefing contains")
 
-differentiators = [
-    ("It stays silent",      "Most alerting systems fire constantly. GrowthCopilot only surfaces what crosses a confidence threshold with sufficient evidence. Quiet days are a feature."),
-    ("It explains tradeoffs","Every recommendation includes the cost of acting and the cost of waiting. You can read the reasoning and disagree — the system doesn't pretend certainty it doesn't have."),
-    ("It has memory",        "The system knows if a signal has occurred before, how long it typically takes to resolve, and whether prior interventions worked. This changes recommendations."),
-    ("It learns restraint",  "Signals that operators consistently ignore get deprioritised over time. The system adapts to what actually matters to each team."),
+sections = [
+    ("Operational posture",  "A one-line editorial summary of the day — Stable / Improving / Needs attention / All clear."),
+    ("Signal header",        "Severity, confidence score, days active, trend direction, escalation history, recurrence count."),
+    ("Narrative context",    "What changed since yesterday — direction shifts, confidence drift, escalation history."),
+    ("Confidence breakdown", "Four-factor decomposition: sample size, effect size, baseline stability, signal novelty. Plus detector agreement bonus."),
+    ("Why this surfaced",    "Surface score breakdown showing exactly why this signal reached the briefing vs staying in background."),
+    ("Consequence model",    "Six dimensions: expected value, blast radius, time sensitivity, cost of waiting, risk of inaction, operator burden."),
+    ("Trust notes",          "Orange warnings when the system's history suggests caution — ignored alerts, self-resolution patterns."),
+    ("Quick feedback",       "3-question feedback widget: Was this real? Action taken? Recommendation useful? Feeds the learning loop."),
 ]
 
-for title, desc in differentiators:
+for title, desc in sections:
     st.markdown(
-        f"<div style='margin-bottom:1rem;'>"
-        f"<div style='font-size:0.85rem;font-weight:600;margin-bottom:0.2rem;'>{title}</div>"
-        f"<div style='font-size:0.8rem;opacity:0.45;line-height:1.6;'>{desc}</div>"
+        f"<div style='padding:0.4rem 0;border-bottom:1px solid #f0f0f0;'>"
+        f"<span style='font-weight:600;color:#333;'>{title}</span>"
+        f"<span style='color:#666;font-size:0.85rem;'> — {desc}</span>"
         f"</div>",
         unsafe_allow_html=True,
     )
 
+st.markdown("---")
+
+# ---------------------------------------------------------------------------
+# The 5 company archetypes
+# ---------------------------------------------------------------------------
+st.markdown("## Company archetypes")
+st.markdown(
+    "<div style='font-size:0.85rem;color:#888;margin-bottom:0.8rem;'>"
+    "Switch archetypes in the sidebar to see how the same intelligence system "
+    "produces completely different operational narratives."
+    "</div>",
+    unsafe_allow_html=True,
+)
+
+from growth_copilot_mvp.archetypes import ARCHETYPES
+for key, arch in ARCHETYPES.items():
+    st.markdown(
+        f"<div style='padding:0.6rem 0.8rem;background:#fafafa;border-radius:6px;"
+        f"margin-bottom:0.5rem;border-left:3px solid #1565c0;'>"
+        f"<div style='font-weight:600;'>{arch['emoji']} {arch['name']}</div>"
+        f"<div style='font-size:0.82rem;color:#555;margin-top:0.2rem;'>{arch['description']}</div>"
+        f"<div style='font-size:0.78rem;color:#888;margin-top:0.2rem;'>"
+        f"Key metric: {arch['key_metric']} &nbsp;·&nbsp; "
+        f"~{arch['daily_installs']} installs/day &nbsp;·&nbsp; "
+        f"Sources: {', '.join(arch['sources'])}"
+        f"</div></div>",
+        unsafe_allow_html=True,
+    )
+
+st.markdown("---")
+
+# ---------------------------------------------------------------------------
+# Scenario types
+# ---------------------------------------------------------------------------
+st.markdown("## Simulation scenarios")
+st.markdown(
+    "<div style='font-size:0.85rem;color:#888;margin-bottom:0.8rem;'>"
+    "Each seed deterministically selects a scenario. Different archetypes have different "
+    "scenario probabilities — mobile games see more regressions, SaaS sees more quiet days."
+    "</div>",
+    unsafe_allow_html=True,
+)
+
+scenarios = [
+    ("A", "Full regression",     "Primary source hits a severe funnel drop. Both funnel and cohort detectors fire."),
+    ("B", "Mild funnel drop",    "Moderate drop — funnel detector fires, cohort borderline. Realistic detector disagreement."),
+    ("C", "DAU spike",           "Volume anomaly only, no funnel issue. Tests acquisition anomaly detector in isolation."),
+    ("D", "Quiet day",           "No injection. System stays silent. Demonstrates restraint."),
+    ("E", "Gradual recovery",    "Regression that improves day by day. Low confidence, recovering signals."),
+    ("F", "False positive",      "Noisy baseline with no real signal. Stress-tests over-triggering."),
+    ("G", "Seasonal decline",    "Volume drops gradually over 2 weeks. Tests slow-moving signal detection."),
+    ("H", "Rollout regression",  "Bug introduced in phased rollout — worsens gradually, not overnight."),
+    ("I", "Attribution shift",   "Organic traffic misattributed. Source divergence without a real product issue."),
+    ("J", "Conflicting signals", "One source improves while another regresses. Tests causal reasoning under ambiguity."),
+]
+
+for code, name, desc in scenarios:
+    st.markdown(
+        f"<div style='display:flex;gap:0.8rem;margin-bottom:0.4rem;align-items:flex-start;'>"
+        f"<div style='font-family:monospace;font-size:0.8rem;color:#888;min-width:1rem;'>{code}</div>"
+        f"<div><strong style='font-size:0.85rem;'>{name}</strong>"
+        f"<span style='color:#666;font-size:0.82rem;'> — {desc}</span></div>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
+
+st.markdown("---")
+
 st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown(
-    "<div style='font-size:0.72rem;opacity:0.22;padding:0.5rem 0 2rem;'>"
+    "<div style='padding:1.5rem 0 0.8rem;'>"
+    "<div style='font-size:1.05rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:0.35rem;'>"
+    "Stay updated</div>"
+    "<div style='font-size:0.82rem;opacity:0.45;line-height:1.6;max-width:440px;margin-bottom:1.1rem;'>"
+    "We're building direct integrations, a daily email digest, and more. "
+    "Leave your email and we'll let you know when new features ship."
+    "</div></div>",
+    unsafe_allow_html=True,
+)
+st.link_button(
+    "Get notified about updates →",
+    "https://form.typeform.com/to/r8s7hkGk",
+)
+
+st.markdown(
+    "<div style='font-size:0.7rem;opacity:0.2;padding:1.2rem 0 2rem;text-align:center;'>"
     "GrowthCopilot · Operational intelligence for product and growth teams · "
     "Running on synthetic demo data</div>",
     unsafe_allow_html=True,
