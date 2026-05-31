@@ -52,6 +52,10 @@ st.markdown("""
     [data-testid="stExpander"]:hover { border-color: rgba(128,128,128,0.18) !important; }
     .streamlit-expanderHeader { font-size: 0.78rem !important; font-weight: 500 !important; opacity: 0.6 !important; padding: 0.6rem 0.85rem !important; background: transparent !important; }
     .streamlit-expanderContent { padding: 0.2rem 0.85rem 0.85rem !important; }
+    /* Remove gap/indent in expander headers */
+    [data-testid="stExpander"] summary { padding-left: 0.85rem !important; }
+    [data-testid="stExpander"] summary svg { display: none !important; }
+    [data-testid="stExpanderToggleIcon"] { display: none !important; }
     [data-testid="stMetricLabel"] { font-size: 0.65rem !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.07em; opacity: 0.4 !important; }
     [data-testid="stMetricValue"] { font-size: 1.25rem !important; font-weight: 600 !important; letter-spacing: -0.02em; }
     .stButton > button { font-family: 'Inter', sans-serif !important; font-size: 0.82rem !important; font-weight: 500 !important; border-radius: 8px !important; transition: all 0.15s ease !important; }
@@ -72,7 +76,7 @@ st.markdown("""
     .dot-pulse { animation: pulse-dot 2.4s ease-in-out infinite; }
     [data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
     [data-testid="stIconMaterial"] { display: none !important; }
-    .streamlit-expanderHeader::after { content: "›"; float: right; opacity: 0.4; font-size: 1rem; }
+    .streamlit-expanderHeader { padding-left: 0.85rem !important; }
 
     /* Dark mode overrides */
     @media (prefers-color-scheme: dark) {
@@ -692,16 +696,17 @@ elif primary_cluster:
             unsafe_allow_html=True,
         )
     else:
-        col_demo, col_link = st.columns([5, 1])
-        with col_demo:
-            st.markdown(
-                "<div style='font-size:0.71rem;opacity:0.35;padding:0.55rem 0;'>"
-                "Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative"
-                "</div>",
-                unsafe_allow_html=True,
-            )
-        with col_link:
-            st.page_link("pages/connect.py", label="Connect data →")
+        st.markdown(
+            "<div style='font-size:0.71rem;opacity:0.35;margin-bottom:0.8rem;"
+            "padding:0.35rem 0.7rem;border-radius:6px;"
+            "border:1px solid rgba(128,128,128,0.12);"
+            "display:flex;justify-content:space-between;align-items:center;'>"
+            "<span>Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative</span>"
+            "<a href='/connect' style='opacity:0.5;font-size:0.68rem;text-decoration:none;'>"
+            "Connect your data →</a>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
 
     render_posture(surfaced_clusters, background_clusters, recently_resolved)
 
