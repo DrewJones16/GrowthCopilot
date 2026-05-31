@@ -1,5 +1,5 @@
 import os, sys
-from datetime import datetime
+from datetime import datetime, date
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import streamlit as st
 from growth_copilot_mvp.aggregations import funnel_step_table, daily_installs, source_funnel_completion
@@ -224,9 +224,9 @@ def render_posture(surfaced, background, recently_resolved):
         d     = "worsening" if "worsening" in cdirs else "recovering" if "recovering" in cdirs else "stable"
         days  = max((getattr(i, "trend", {}).get("days_active", 1) for i in c["insights"]), default=1)
         if c["severity"] == "CRITICAL" and d == "worsening":
-            parts.append(f"<strong>{c['title']}</strong> is worsening and requires attention.")
+            parts.append(f"<strong>{c['title']}</strong> is worsening.")
         elif c["severity"] == "CRITICAL" and d == "recovering":
-            parts.append(f"<strong>{c['title']}</strong> is recovering.")
+            parts.append(f"<strong>{c['title']}</strong> is recovering — de-escalating.")
         elif d == "recovering":
             parts.append(f"<strong>{c['title']}</strong> is improving.")
         elif d == "stable" and days >= 7:
@@ -235,7 +235,8 @@ def render_posture(surfaced, background, recently_resolved):
             parts.append(f"<strong>{c['title']}</strong> active.")
     if background:
         parts.append(f"{len(background)} signal{'s' if len(background)!=1 else ''} tracked silently below threshold.")
-    if recently_resolved:
+    # Only show resolved signals if there are also active signals (avoid contradictory "All clear + resolved")
+    if recently_resolved and surfaced:
         parts.append(f"<strong>{recently_resolved[0]['title']}</strong> resolved {recently_resolved[0].get('resolution_date','recently')}.")
 
     desc = " ".join(parts) if parts else "No active signals."
@@ -446,7 +447,7 @@ def render_feedback(cluster_title: str):
             at = st.selectbox("at", ["—","None","Investigating","Mitigated"], index=0,
                               label_visibility="collapsed", key=f"at_{cluster_title}")
         with c3:
-            st.markdown("<div style='font-size:0.6rem;font-weight:600;opacity:0.38;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.3rem;'>Rec. useful?</div>", unsafe_allow_html=True)
+            st.markdown("<div style='font-size:0.6rem;font-weight:600;opacity:0.38;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.3rem;'>Useful?</div>", unsafe_allow_html=True)
             ru = st.selectbox("ru", ["—","Yes","Somewhat","No"], index=0,
                               label_visibility="collapsed", key=f"ru_{cluster_title}")
         with c4:
@@ -568,7 +569,7 @@ with col_title:
 with col_date:
     st.markdown(
         f"<div style='text-align:right;font-size:0.78rem;color:inherit;padding-top:0.3rem;'>"
-        f"{datetime.now().strftime('%A, %b %d')}<br>"
+        f"{date.today().strftime('%A, %b %d')}<br>"
         f"{arch['emoji']} {arch['name']}</div>",
         unsafe_allow_html=True,
     )
@@ -723,8 +724,15 @@ elif primary_cluster:
 
 
     # Signal header
-    sev_t = SEV_LABEL.get(sev, sev)
-    sev_c = {"CRITICAL":"#d94f4f","WATCH":"#c07000","OPPORTUNITY":"#16a34a"}.get(sev,"#888")
+    # Adjust displayed severity based on current direction
+    # A recovering CRITICAL signal should show as WATCH to avoid contradiction
+    _display_sev = sev
+    if sev == "CRITICAL" and momentum_dir == "recovering":
+        _display_sev = "WATCH"
+    elif sev == "CRITICAL" and momentum_dir == "stable" and days_active > 7:
+        _display_sev = "WATCH"
+    sev_t = SEV_LABEL.get(_display_sev, _display_sev)
+    sev_c = {"CRITICAL":"#d94f4f","WATCH":"#c07000","OPPORTUNITY":"#16a34a"}.get(_display_sev,"#888")
     st.markdown(
         f"<div style='display:flex;align-items:center;gap:5px;margin-bottom:0.12rem;'>"
         f"<div style='width:5px;height:5px;border-radius:50%;background:{sev_c};flex-shrink:0;'></div>"
@@ -846,16 +854,12 @@ elif primary_cluster:
     render_why_surfaced(primary_cluster, decision)
 
     if top_hypothesis:
-        st.markdown(
-            f"<div style='margin:0 0 0.6rem;'>"
-            f"<div style='font-size:0.6rem;font-weight:600;opacity:0.32;"
-            f"text-transform:uppercase;letter-spacing:0.09em;margin-bottom:0.2rem;'>"
-            f"Likely cause</div>"
-            f"<div style='font-size:0.8rem;opacity:0.62;line-height:1.5;"
-            f"padding-left:0.55rem;border-left:1px solid rgba(128,128,128,0.18);'>"
-            f"{top_hypothesis}</div></div>",
-            unsafe_allow_html=True,
-        )
+        with st.expander("Likely cause", expanded=True):
+            st.markdown(
+                f"<div style='font-size:0.82rem;opacity:0.72;line-height:1.55;'>"
+                f"{top_hypothesis}</div>",
+                unsafe_allow_html=True,
+            )
 
     # Action card
     render_action_card(decision)
@@ -1003,7 +1007,7 @@ with col_note:
             n   = len(st.session_state["user_events"])
             _meta = f"{src} · {n:,} events"
         else:
-            _meta = f"seed {st.session_state.seed} · ~55% inject regression · switch archetype in sidebar"
+            _meta = ""  # hide debug info from regular users
     st.markdown(
     f"<div style='font-family:ui-monospace,monospace;"
     f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",

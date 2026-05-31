@@ -19,6 +19,20 @@ from growth_copilot_mvp.trust_engine import trust_summary
 
 st.set_page_config(page_title="GrowthCopilot — Calibration", page_icon=":wrench:", layout="wide")
 
+st.markdown("""
+<style>
+    .stButton > button[kind="primary"] {
+        background-color: #1e293b !important;
+        color: white !important;
+        border: none !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background-color: #0f172a !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
 st.title("System Calibration Console")
 st.markdown(
     "<div style='color:inherit;font-size:0.85rem'>"
