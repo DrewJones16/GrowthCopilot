@@ -213,6 +213,35 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+with st.expander("What columns does my CSV need?", expanded=False):
+    req_cols = [
+        ("User ID",    "A unique identifier per user. e.g. <code>distinct_id</code>, <code>user_id</code>, <code>pseudo_id</code>"),
+        ("Event name", "The name of the action the user took. e.g. <code>onboarding_complete</code>, <code>purchase</code>"),
+        ("Source",     "Where the user came from. e.g. <code>utm_source</code>, <code>channel</code>, <code>medium</code>"),
+        ("Timestamp",  "When the event happened. ISO format preferred: <code>2024-03-15</code> or <code>2024-03-15T09:00:00</code>"),
+    ]
+    st.markdown(
+        "<div style='font-size:0.8rem;opacity:0.55;margin-bottom:0.7rem;line-height:1.6;'>"
+        "GrowthCopilot needs four columns. Column names don't have to match exactly — "
+        "you'll map them after uploading.</div>",
+        unsafe_allow_html=True,
+    )
+    for col_name, col_desc in req_cols:
+        st.markdown(
+            f"<div style='display:flex;gap:0.8rem;margin-bottom:0.45rem;align-items:flex-start;'>"
+            f"<div style='font-size:0.78rem;font-weight:600;min-width:80px;padding-top:1px;'>{col_name}</div>"
+            f"<div style='font-size:0.78rem;opacity:0.55;line-height:1.5;'>{col_desc}</div>"
+            f"</div>",
+            unsafe_allow_html=True,
+        )
+    st.markdown(
+        "<div style='font-size:0.75rem;opacity:0.4;margin-top:0.5rem;border-top:1px solid rgba(128,128,128,0.12);"
+        "padding-top:0.5rem;'>"
+        "Exports from Mixpanel and Amplitude include all four automatically. "
+        "For other tools, use the column mapper that appears after upload.</div>",
+        unsafe_allow_html=True,
+    )
+
 uploaded = st.file_uploader(
     "Drop your CSV here",
     type=["csv"],

@@ -97,6 +97,15 @@ def render_demo_controls(sidebar_container) -> None:
             "Demo mode", key="demo_mode",
             value=st.session_state.get("demo_mode", False),
         )
+        st.markdown(
+            "<div style='font-size:0.68rem;opacity:0.4;line-height:1.4;"
+            "margin-top:0.1rem;margin-bottom:0.2rem;'>"
+            + ("Walk through a curated 28-day arc step by step."
+               if demo_mode else
+               "Enable to walk through a curated 28-day escalation arc.")
+            + "</div>",
+            unsafe_allow_html=True,
+        )
 
         if demo_mode:
             step  = st.session_state.get("demo_step", 0)

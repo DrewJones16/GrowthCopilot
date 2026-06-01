@@ -99,15 +99,15 @@ def render_narrative_memory(hints: List[str]) -> None:
         return
     import streamlit as st
     lines_html = "".join(
-        f"<div style='font-size:0.78rem;opacity:0.5;line-height:1.5;"
+        f"<div style='font-size:0.78rem;opacity:0.65;line-height:1.5;"
         f"padding:0.1rem 0 0.1rem 0.6rem;"
-        f"border-left:1px solid rgba(128,128,128,0.15);"
+        f"border-left:1px solid rgba(128,128,128,0.2);"
         f"margin-bottom:0.18rem;'>{h}</div>"
         for h in hints
     )
     st.markdown(
         f"<div style='margin:0.1rem 0 0.6rem;'>"
-        f"<div style='font-size:0.6rem;font-weight:600;opacity:0.32;"
+        f"<div style='font-size:0.6rem;font-weight:600;opacity:0.48;"
         f"text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.28rem;'>"
         f"Operational memory</div>"
         f"{lines_html}</div>",

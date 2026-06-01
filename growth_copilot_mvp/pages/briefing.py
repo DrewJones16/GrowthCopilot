@@ -180,7 +180,7 @@ STATUS_EMOJI = {
 }
 URG_COLOR = {
     "immediate": "#c62828", "this_week": "#f57c00",
-    "monitor": "#388e3c", "wait_and_observe": "#1565c0",
+    "monitor": "#0369a1", "wait_and_observe": "#64748b",
     "insufficient_evidence": "#888",
 }
 
@@ -255,7 +255,8 @@ def render_posture(surfaced, background, recently_resolved):
         f"<div style='width:6px;height:6px;border-radius:50%;background:{color};"
         f"flex-shrink:0;margin-top:0.35rem;'></div>"
         f"<div><span style='font-size:0.82rem;font-weight:600;color:{color};'>{label}</span>"
-        f"<span style='font-size:0.8rem;opacity:0.45;margin-left:0.5rem;'>{desc}</span>"
+        f"<span style='font-size:0.8rem;opacity:0.3;'> &nbsp;·&nbsp; </span>"
+        f"<span style='font-size:0.8rem;opacity:0.45;'>{desc}</span>"
         f"</div></div>",
         unsafe_allow_html=True,
     )
@@ -433,7 +434,7 @@ def render_action_card(decision):
         f"text-transform:uppercase;letter-spacing:0.1em;'>{ud}</span>"
         f"</div>"
         f"<div style='font-size:0.9rem;line-height:1.55;font-weight:500;'>{decision['action']}</div>"
-        f"<div style='font-size:0.65rem;opacity:0.28;margin-top:0.3rem;'>"
+        f"<div style='font-size:0.65rem;opacity:0.5;margin-top:0.3rem;'>"
         f"Confidence: {rc} &nbsp;·&nbsp; Cost: {co} &nbsp;·&nbsp; {rv.replace('_',' ').title()}"
         f"</div></div>",
         unsafe_allow_html=True,
@@ -898,6 +899,14 @@ elif primary_cluster:
                 "✓ Multiple detectors agree</div>",
                 unsafe_allow_html=True,
             )
+        else:
+            st.markdown(
+                "<div style='font-size:0.73rem;margin-top:0.4rem;padding:3px 8px;"
+                "border-radius:4px;display:inline-block;background:rgba(234,179,8,0.08);"
+                "color:#b45309;border:1px solid rgba(234,179,8,0.22);'>"
+                "⚠ Single detector — treat with caution.</div>",
+                unsafe_allow_html=True,
+            )
         # Surface score breakdown, separated by a thin rule
         st.markdown(
             "<div style='height:1px;background:rgba(128,128,128,0.1);margin:0.8rem 0 0.4rem;'></div>",
@@ -1073,4 +1082,39 @@ with col_note:
     f"<div style='font-family:ui-monospace,monospace;"
     f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
     unsafe_allow_html=True,
+) else "Regenerate")
+    if st.button(_btn_label, type="primary", use_container_width=True):
+        if _dm:
+            from growth_copilot_mvp.demo_flow import get_demo_seed as _gds
+            if _at_end:
+                # Loop back to start
+                st.session_state["demo_step"] = 0
+                st.session_state["seed"] = _gds(0)
+            else:
+                _ns = _cur_step + 1
+                st.session_state["demo_step"] = _ns
+                st.session_state["seed"] = _gds(_ns)
+        else:
+            st.session_state.seed += 1
+            st.session_state["_regen_count"] = st.session_state.get("_regen_count", 0) + 1
+        st.rerun()
+with col_note:
+    _dm2 = st.session_state.get("demo_mode", False)
+    if _dm2:
+        from growth_copilot_mvp.demo_flow import get_demo_seed as _gds2, get_demo_label as _gdl2
+        _meta = f"demo · {_gdl2(st.session_state.get('demo_step',0))}"
+    else:
+        if st.session_state.get("user_events"):
+            src = st.session_state.get("user_data_source", "your data")
+            n   = len(st.session_state["user_events"])
+            _meta = f"{src} · {n:,} events"
+        else:
+            _meta = ""  # hide debug info from regular users
+    st.markdown(
+    f"<div style='font-family:ui-monospace,monospace;"
+    f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
+    unsafe_allow_html=True,
+)
+    unsafe_allow_html=True,
+)
 )
