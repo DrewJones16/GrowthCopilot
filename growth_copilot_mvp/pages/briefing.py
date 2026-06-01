@@ -348,7 +348,7 @@ def render_narrative(record):
         )
 
 
-def render_why_surfaced(cluster, decision):
+def render_why_surfaced(cluster, decision, inside_expander=False):
     from growth_copilot_mvp.attention import (
         CONFIDENCE_WEIGHT, URGENCY_WEIGHT, PERSISTENCE_WEIGHT, AGREEMENT_WEIGHT,
         URGENCY_SCORES, _persistence_score,
@@ -373,7 +373,8 @@ def render_why_surfaced(cluster, decision):
         ("Persistence",       f"{days_active}d active",             pts["Persistence"]),
         ("Detector agreement","2+ detectors" if det_agree else "Single detector", pts["Detector agreement"]),
     ]
-    with st.expander(f"Evidence · Surface score  ·  {total_score}/100", expanded=False):
+
+    def _why_table():
         st.markdown(
             "<div style='display:grid;grid-template-columns:1fr 1fr auto;"
             "gap:0.4rem 1rem;padding-bottom:0.35rem;margin-bottom:0.3rem;"
@@ -397,6 +398,18 @@ def render_why_surfaced(cluster, decision):
                 f"</div>",
                 unsafe_allow_html=True,
             )
+
+    if inside_expander:
+        st.markdown(
+            f"<div style='font-size:0.6rem;font-weight:600;opacity:0.35;"
+            f"text-transform:uppercase;letter-spacing:0.09em;margin:0.7rem 0 0.4rem;'>"
+            f"Surface score · {total_score}/100</div>",
+            unsafe_allow_html=True,
+        )
+        _why_table()
+    else:
+        with st.expander(f"Evidence · Surface score  ·  {total_score}/100", expanded=False):
+            _why_table()
 
 
 def render_action_card(decision):
@@ -455,26 +468,26 @@ def render_feedback(cluster_title: str):
         c1, c2, c3, c4 = st.columns([2, 2, 2, 1])
         with c1:
             st.markdown("<div style='font-size:0.6rem;font-weight:600;opacity:0.38;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.3rem;'>Was this real?</div>", unsafe_allow_html=True)
-            sr = st.selectbox("sr", ["—","Yes","No","Unsure"], index=0,
+            sr = st.selectbox("sr", ["Select…","Yes","No","Unsure"], index=0,
                               label_visibility="collapsed", key=f"sr_{cluster_title}")
         with c2:
             st.markdown("<div style='font-size:0.6rem;font-weight:600;opacity:0.38;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.3rem;'>Action taken?</div>", unsafe_allow_html=True)
-            at = st.selectbox("at", ["—","None","Investigating","Mitigated"], index=0,
+            at = st.selectbox("at", ["Select…","None","Investigating","Mitigated"], index=0,
                               label_visibility="collapsed", key=f"at_{cluster_title}")
         with c3:
             st.markdown("<div style='font-size:0.6rem;font-weight:600;opacity:0.38;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.3rem;'>Useful?</div>", unsafe_allow_html=True)
-            ru = st.selectbox("ru", ["—","Yes","Somewhat","No"], index=0,
+            ru = st.selectbox("ru", ["Select…","Yes","Somewhat","No"], index=0,
                               label_visibility="collapsed", key=f"ru_{cluster_title}")
         with c4:
             st.markdown("<div style='margin-top:1.6rem;'></div>", unsafe_allow_html=True)
             if st.button("Save", key=f"fb_{cluster_title}", use_container_width=True):
-                if sr == "—" and at == "—" and ru == "—":
+                if sr == "Select…" and at == "Select…" and ru == "Select…":
                     st.toast("Select at least one option before saving.", icon="⚠️")
                 else:
                     kwargs = {}
                     if sr == "Yes":       kwargs["signal_real"] = True
                     elif sr == "No":      kwargs["signal_real"] = False
-                    if at != "—":         kwargs["action_taken"] = at.lower()
+                    if at not in ("Select…",): kwargs["action_taken"] = at.lower()
                     if ru == "Yes":       kwargs["recommendation_useful"] = True
                     elif ru == "Somewhat":kwargs["recommendation_useful"] = True
                     elif ru == "No":      kwargs["recommendation_useful"] = False
@@ -568,7 +581,10 @@ with st.sidebar:
             f"<div style='font-size:0.75rem;color:inherit;margin-top:0.3rem;line-height:1.4;'>"
             f"{arch['description']}</div>"
             f"<div style='font-size:0.72rem;color:inherit;margin-top:0.3rem;'>"
-            f"Key metric: {arch['key_metric']}</div>",
+            f"Key metric: {arch['key_metric']}</div>"
+            f"<div style='font-size:0.72rem;color:inherit;margin-top:0.15rem;"
+            f"overflow-wrap:break-word;word-break:break-word;'>"
+            f"Sources: {', '.join(arch['sources'])}</div>",
             unsafe_allow_html=True,
         )
 
@@ -846,8 +862,8 @@ elif primary_cluster:
 
     st.markdown("<div style='margin:0.5rem 0;'></div>", unsafe_allow_html=True)
 
-    # Confidence (collapsed by default — clean briefing)
-    with st.expander("Signal evidence", expanded=False):
+    # Combined signal detail expander — evidence first, surface score below
+    with st.expander("Signal detail", expanded=False):
         factors = conf.get("factors", {})
         badges_html = "".join(
             f"<span style='display:inline-block;background:rgba(128,128,128,0.08);"
@@ -882,8 +898,12 @@ elif primary_cluster:
                 "✓ Multiple detectors agree</div>",
                 unsafe_allow_html=True,
             )
-
-    render_why_surfaced(primary_cluster, decision)
+        # Surface score breakdown, separated by a thin rule
+        st.markdown(
+            "<div style='height:1px;background:rgba(128,128,128,0.1);margin:0.8rem 0 0.4rem;'></div>",
+            unsafe_allow_html=True,
+        )
+        render_why_surfaced(primary_cluster, decision, inside_expander=True)
 
     if top_hypothesis:
         with st.expander("Likely cause", expanded=True):
