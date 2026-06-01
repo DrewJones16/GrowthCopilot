@@ -903,8 +903,7 @@ elif primary_cluster:
             st.markdown(
                 "<div style='font-size:0.73rem;margin-top:0.4rem;padding:3px 8px;"
                 "border-radius:4px;display:inline-block;background:rgba(234,179,8,0.08);"
-                "color:#b45309;border:1px solid rgba(234,179,8,0.22);'>"
-                "⚠ Single detector — treat with caution.</div>",
+                "color:#b45309;border:1px solid rgba(234,179,8,0.22);'>"                "⚠ Single detector — treat with caution.</div>",
                 unsafe_allow_html=True,
             )
         # Surface score breakdown, separated by a thin rule
@@ -1082,39 +1081,4 @@ with col_note:
     f"<div style='font-family:ui-monospace,monospace;"
     f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
     unsafe_allow_html=True,
-) else "Regenerate")
-    if st.button(_btn_label, type="primary", use_container_width=True):
-        if _dm:
-            from growth_copilot_mvp.demo_flow import get_demo_seed as _gds
-            if _at_end:
-                # Loop back to start
-                st.session_state["demo_step"] = 0
-                st.session_state["seed"] = _gds(0)
-            else:
-                _ns = _cur_step + 1
-                st.session_state["demo_step"] = _ns
-                st.session_state["seed"] = _gds(_ns)
-        else:
-            st.session_state.seed += 1
-            st.session_state["_regen_count"] = st.session_state.get("_regen_count", 0) + 1
-        st.rerun()
-with col_note:
-    _dm2 = st.session_state.get("demo_mode", False)
-    if _dm2:
-        from growth_copilot_mvp.demo_flow import get_demo_seed as _gds2, get_demo_label as _gdl2
-        _meta = f"demo · {_gdl2(st.session_state.get('demo_step',0))}"
-    else:
-        if st.session_state.get("user_events"):
-            src = st.session_state.get("user_data_source", "your data")
-            n   = len(st.session_state["user_events"])
-            _meta = f"{src} · {n:,} events"
-        else:
-            _meta = ""  # hide debug info from regular users
-    st.markdown(
-    f"<div style='font-family:ui-monospace,monospace;"
-    f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
-    unsafe_allow_html=True,
-)
-    unsafe_allow_html=True,
-)
 )
