@@ -453,17 +453,20 @@ def render_feedback(cluster_title: str):
         with c4:
             st.markdown("<div style='margin-top:1.6rem;'></div>", unsafe_allow_html=True)
             if st.button("Save", key=f"fb_{cluster_title}", use_container_width=True):
-                kwargs = {}
-                if sr == "Yes":       kwargs["signal_real"] = True
-                elif sr == "No":      kwargs["signal_real"] = False
-                if at != "—":         kwargs["action_taken"] = at.lower()
-                if ru == "Yes":       kwargs["recommendation_useful"] = True
-                elif ru == "Somewhat":kwargs["recommendation_useful"] = True
-                elif ru == "No":      kwargs["recommendation_useful"] = False
-                if at == "None":      increment_ignored(cluster_title)
-                if kwargs:            record_outcome(cluster_title, **kwargs)
-                st.session_state[key] = True
-                st.rerun()
+                if sr == "—" and at == "—" and ru == "—":
+                    st.toast("Select at least one option before saving.", icon="⚠️")
+                else:
+                    kwargs = {}
+                    if sr == "Yes":       kwargs["signal_real"] = True
+                    elif sr == "No":      kwargs["signal_real"] = False
+                    if at != "—":         kwargs["action_taken"] = at.lower()
+                    if ru == "Yes":       kwargs["recommendation_useful"] = True
+                    elif ru == "Somewhat":kwargs["recommendation_useful"] = True
+                    elif ru == "No":      kwargs["recommendation_useful"] = False
+                    if at == "None":      increment_ignored(cluster_title)
+                    if kwargs:            record_outcome(cluster_title, **kwargs)
+                    st.session_state[key] = True
+                    st.rerun()
 
 
 def render_resolved(recently_resolved):
@@ -986,12 +989,21 @@ elif primary_cluster:
 col_btn, col_note = st.columns([1, 3])
 with col_btn:
     _dm = st.session_state.get("demo_mode", False)
-    if st.button("Next step →" if _dm else "Regenerate", type="primary", use_container_width=True):
+    _cur_step = st.session_state.get("demo_step", 0)
+    from growth_copilot_mvp.demo_flow import DEMO_STEP_COUNT as _dsc
+    _at_end = _dm and _cur_step >= _dsc - 1
+    _btn_label = "Start over ↺" if _at_end else ("Next step →" if _dm else "Regenerate")
+    if st.button(_btn_label, type="primary", use_container_width=True):
         if _dm:
-            from growth_copilot_mvp.demo_flow import get_demo_seed as _gds, DEMO_STEP_COUNT as _dsc
-            _ns = min(st.session_state.get("demo_step", 0) + 1, _dsc - 1)
-            st.session_state["demo_step"] = _ns
-            st.session_state["seed"] = _gds(_ns)
+            from growth_copilot_mvp.demo_flow import get_demo_seed as _gds
+            if _at_end:
+                # Loop back to start
+                st.session_state["demo_step"] = 0
+                st.session_state["seed"] = _gds(0)
+            else:
+                _ns = _cur_step + 1
+                st.session_state["demo_step"] = _ns
+                st.session_state["seed"] = _gds(_ns)
         else:
             st.session_state.seed += 1
             st.session_state["_regen_count"] = st.session_state.get("_regen_count", 0) + 1

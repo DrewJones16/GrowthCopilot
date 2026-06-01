@@ -50,7 +50,7 @@ st.write("")
 st.markdown("## Signal Registry")
 summary = registry_summary()
 c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Total tracked",  summary["total_tracked"])
+c1.metric("Tracked",  summary["total_tracked"])
 c2.metric("Active",         summary["active"])
 c3.metric("Surfaced",        summary.get("surfaced", summary["active"]))
 c4.metric("Fading",          summary.get("fading", 0))
@@ -157,7 +157,7 @@ if o_sum.get("total_outcomes", 0) == 0:
     st.info("No outcomes recorded yet. Use the Quick feedback widget in the daily briefing.")
 else:
     oc1, oc2, oc3, oc4 = st.columns(4)
-    oc1.metric("Outcomes recorded",  o_sum["total_outcomes"])
+    oc1.metric("Outcomes",  o_sum["total_outcomes"])
     tp = o_sum.get("signal_real_rate")
     oc2.metric("Signal real rate",   f"{tp*100:.0f}%" if tp is not None else "—")
     ru = o_sum.get("recommendation_useful_rate")
@@ -216,6 +216,9 @@ if all_sigs_log:
             impact      = st.selectbox("Business impact",         ["—","none","low","medium","high"],                key="o_impact")
             notes_field = st.text_input("Notes (optional)",                                                          key="o_notes")
         if st.button("Save outcome", type="primary", key="save_outcome"):
+            if signal_real == "—" and action_taken == "—" and rec_useful == "—":
+                st.toast("Select at least one option before saving.", icon="⚠️")
+                st.stop()
             kwargs = {}
             if signal_real == "Yes":         kwargs["signal_real"] = True
             elif signal_real == "No":        kwargs["signal_real"] = False

@@ -145,32 +145,35 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-c1, c2, c3 = st.columns(3)
 selected_tool = st.session_state.get("connect_tool")
 
-def _tool_btn(col, key, tool):
-    with col:
-        active = selected_tool == key
-        border = f"2px solid {tool['color']}" if active else "1px solid rgba(128,128,128,0.15)"
-        bg     = f"rgba(128,128,128,0.04)"
-        st.markdown(
-            f"<div style='border:{border};border-radius:10px;padding:0.85rem 0.7rem;"
-            f"text-align:center;background:{bg};cursor:pointer;margin-bottom:0.4rem;'>"
-            f"<div style='font-size:0.88rem;font-weight:600;color:{'#1e293b' if active else '#666'};'>"
-            f"{tool['name']}</div>"
-            f"</div>",
-            unsafe_allow_html=True,
-        )
-        if st.button(f"Select {tool['name']}", key=f"tool_{key}", use_container_width=True):
-            st.session_state["connect_tool"] = key
-            st.session_state.pop("connect_step", None)
-            st.rerun()
-
-_tool_btn(c1, "mixpanel", TOOLS["mixpanel"])
-_tool_btn(c2, "amplitude", TOOLS["amplitude"])
-_tool_btn(c3, "other",     TOOLS["other"])
+# Clean single-row tool selector
+c1, c2, c3 = st.columns(3)
+with c1:
+    _active = selected_tool == "mixpanel"
+    if st.button(f"{'✓ ' if _active else ''}Mixpanel", key="tool_mixpanel",
+                 use_container_width=True, type="primary" if _active else "secondary"):
+        st.session_state["connect_tool"] = "mixpanel"
+        st.rerun()
+with c2:
+    _active = selected_tool == "amplitude"
+    if st.button(f"{'✓ ' if _active else ''}Amplitude", key="tool_amplitude",
+                 use_container_width=True, type="primary" if _active else "secondary"):
+        st.session_state["connect_tool"] = "amplitude"
+        st.rerun()
+with c3:
+    _active = selected_tool == "other"
+    if st.button(f"{'✓ ' if _active else ''}Other tool", key="tool_other",
+                 use_container_width=True, type="primary" if _active else "secondary"):
+        st.session_state["connect_tool"] = "other"
+        st.rerun()
 
 if not selected_tool:
+    st.markdown(
+        "<div style='font-size:0.78rem;opacity:0.38;margin-top:0.8rem;'>"
+        "Select your analytics tool above to see export instructions.</div>",
+        unsafe_allow_html=True,
+    )
     st.stop()
 
 tool = TOOLS[selected_tool]
