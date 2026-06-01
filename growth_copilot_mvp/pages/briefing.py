@@ -88,6 +88,10 @@ st.markdown("""
     .stMarkdown p { color: inherit !important; }
     .stMarkdown div { color: inherit !important; }
 
+    /* Fix scroll capture on Streamlit Cloud */
+    html { overflow: auto !important; }
+    .main { overflow: auto !important; }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -237,7 +241,10 @@ def render_posture(surfaced, background, recently_resolved):
         parts.append(f"{len(background)} signal{'s' if len(background)!=1 else ''} tracked silently below threshold.")
     # Only show resolved signals if there are also active signals (avoid contradictory "All clear + resolved")
     if recently_resolved and surfaced:
-        parts.append(f"<strong>{recently_resolved[0]['title']}</strong> resolved {recently_resolved[0].get('resolution_date','recently')}.")
+        _res_date = recently_resolved[0].get('resolution_date')
+        if not _res_date or str(_res_date) == 'None':
+            _res_date = 'recently'
+        parts.append(f"<strong>{recently_resolved[0]['title']}</strong> resolved {_res_date}.")
 
     desc = " ".join(parts) if parts else "No active signals."
 
@@ -289,8 +296,16 @@ def render_signal_meta(conf, record, days_active, momentum_dir, momentum_days):
         "stable":     lambda: _pill_neutral(f"→ Stable · {days_active}d"),
     }
     pills.append(dir_fns.get(momentum_dir, dir_fns["stable"])())
-    if escl >= 2:   pills.append(_pill_critical("Escalated"))
-    elif escl == 1: pills.append(_pill_warning("Escalated"))
+    # Only show Escalated badge if currently worsening or recently escalated (last 3 direction entries)
+    if escl >= 1:
+        _show_escl = momentum_dir == "worsening"
+        if not _show_escl:
+            _dir_hist = record.get("direction_history", []) if record else []
+            _recent_dirs = [d for _, d in _dir_hist[-3:]] if _dir_hist else []
+            _show_escl = "worsening" in _recent_dirs
+        if _show_escl:
+            if escl >= 2: pills.append(_pill_critical("Escalated"))
+            else:         pills.append(_pill_warning("Escalated"))
     if recur > 0:   pills.append(_pill_info(f"×{recur + 1}"))
     conf_fns = {"High": _pill_success, "Medium": _pill_warning, "Low": _pill_critical}
     pills.append(conf_fns.get(conf["label"], _pill_neutral)(f"{conf['label']} {conf['score']}"))
@@ -464,7 +479,9 @@ def render_feedback(cluster_title: str):
                     elif ru == "Somewhat":kwargs["recommendation_useful"] = True
                     elif ru == "No":      kwargs["recommendation_useful"] = False
                     if at == "None":      increment_ignored(cluster_title)
-                    if kwargs:            record_outcome(cluster_title, **kwargs)
+                    if kwargs:
+                        record_outcome(cluster_title, **kwargs)
+                        st.toast("Saved. Thanks for the feedback.", icon="✓")
                     st.session_state[key] = True
                     st.rerun()
 
@@ -494,13 +511,15 @@ def render_resolved(recently_resolved):
         if r.get("peak_escalation_level",0) >= 1: notes.append("escalated")
         if r.get("recurrence_count",0) > 0: notes.append(f"×{r['recurrence_count']}")
         meta = " · ".join(notes)
+        _res_d = r.get("resolution_date")
+        _res_d_str = str(_res_d) if _res_d and str(_res_d) != "None" else "recently"
         st.markdown(
             f"<div style='display:flex;align-items:center;gap:0.5rem;"
             f"padding:0.3rem 0;opacity:0.45;'>"
             f"<div style='width:6px;height:6px;border-radius:50%;flex-shrink:0;background:{dot_c};'></div>"
             f"<span style='font-size:0.79rem;font-weight:500;'>{r.get('title','')}</span>"
             f"<span style='font-size:0.7rem;margin-left:auto;white-space:nowrap;'>"
-            f"Resolved {r.get('resolution_date','')}{' · '+meta if meta else ''}</span>"
+            f"Resolved {_res_d_str}{' · '+meta if meta else ''}</span>"
             f"</div>",
             unsafe_allow_html=True,
         )
@@ -792,8 +811,18 @@ elif primary_cluster:
                 headline_sub = f"vs {rm.get('others_rate',0)*100:.1f}% other sources"
 
             if headline_val:
+                # Derive a short metric label from signal context
+                if rm.get("actual_installs") is not None:
+                    _metric_label = "Daily installs"
+                elif rm.get("worst_rate") is not None:
+                    _metric_label = primary_cluster["title"] + " rate"
+                else:
+                    _metric_label = primary_cluster["title"]
                 st.markdown(
                     f"<div style='padding:0.3rem 0 0.6rem 0;'>"
+                    f"<div style='font-size:0.65rem;font-weight:600;opacity:0.38;"
+                    f"text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;'>"
+                    f"{_metric_label}</div>"
                     f"<div style='font-size:2.8rem;font-weight:700;"
                     f"letter-spacing:-0.04em;line-height:1;'>{headline_val}</div>"
                     f"<div style='font-size:0.74rem;opacity:0.4;margin-top:0.3rem;'>"
@@ -825,7 +854,7 @@ elif primary_cluster:
             f"border:1px solid rgba(128,128,128,0.12);border-radius:4px;"
             f"padding:2px 7px;margin:0 4px 4px 0;font-size:0.67rem;font-weight:600;'>"
             f"<span style='opacity:0.45;font-weight:400;'>{FACTOR_LBL.get(k,k).split()[0]} </span>"
-            f"<span style='color:{"#4a6fbb" if v>=0.7 else "#c07000" if v>=0.45 else "#d94f4f"};'>"
+            f"<span style='color:{'#4a6fbb' if v>=0.7 else '#c07000' if v>=0.45 else '#d94f4f'};'>"
             f"{int(v*100)}%</span></span>"
             for k, v in factors.items()
         )
@@ -1012,7 +1041,7 @@ with col_note:
     _dm2 = st.session_state.get("demo_mode", False)
     if _dm2:
         from growth_copilot_mvp.demo_flow import get_demo_seed as _gds2, get_demo_label as _gdl2
-        _meta = f"demo · seed {_gds2(st.session_state.get('demo_step',0))} · {_gdl2(st.session_state.get('demo_step',0))}"
+        _meta = f"demo · {_gdl2(st.session_state.get('demo_step',0))}"
     else:
         if st.session_state.get("user_events"):
             src = st.session_state.get("user_data_source", "your data")

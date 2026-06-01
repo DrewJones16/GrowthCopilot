@@ -216,7 +216,7 @@ if all_sigs_log:
             impact      = st.selectbox("Business impact",         ["—","none","low","medium","high"],                key="o_impact")
             notes_field = st.text_input("Notes (optional)",                                                          key="o_notes")
         if st.button("Save outcome", type="primary", key="save_outcome"):
-            if signal_real == "—" and action_taken == "—" and rec_useful == "—":
+            if signal_real == "—" and action == "—" and rec_useful == "—":
                 st.toast("Select at least one option before saving.", icon="⚠️")
                 st.stop()
             kwargs = {}
@@ -234,7 +234,7 @@ if all_sigs_log:
             if impact != "—":               kwargs["business_impact"] = impact
             if notes_field:                  kwargs["operator_feedback"] = notes_field
             record_outcome(selected, **kwargs)
-            st.success(f"Outcome recorded for '{selected}'")
+            st.toast("Outcome recorded.", icon="✓")
             st.rerun()
 
 # ---------------------------------------------------------------------------
