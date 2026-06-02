@@ -553,15 +553,18 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
 
+    # Always define arch (used in header even when scenario selector is hidden)
+    arch = ARCHETYPES[st.session_state.get("archetype_key", "consumer_social")]
+
+    # Demo controls — above the fold, before scenario metadata
+    if not st.session_state.get("user_events"):
+        render_demo_controls(st.sidebar)
+
     # Navigation group
     st.markdown("<div style='height:1px;background:rgba(128,128,128,0.1);margin:0.8rem 0;'></div>", unsafe_allow_html=True)
 
-
-    # Always define arch (used in header even when scenario selector is hidden)
-    arch = ARCHETYPES[st.session_state.get("archetype_key", "consumer_social")]
     # Scenario group — only for demo/synthetic mode
     if not st.session_state.get("user_events"):
-    # Scenario group
         st.markdown(
             "<div style='font-size:0.68rem;font-weight:600;color:inherit;text-transform:uppercase;"
             "letter-spacing:0.08em;margin-bottom:0.4rem;'>Scenario</div>",
@@ -588,10 +591,6 @@ with st.sidebar:
             f"Sources: {', '.join(arch['sources'])}</div>",
             unsafe_allow_html=True,
         )
-
-
-
-        render_demo_controls(st.sidebar)
 
 # ---------------------------------------------------------------------------
 # Page header
@@ -696,38 +695,38 @@ elif primary_cluster:
     decision      = all_decisions[clustered.index(primary_cluster)]
     cons          = decision.get("consequences", {})
 
-    # First-run welcome overlay — show once per session until dismissed
-    _is_first_visit = not st.session_state.get("first_run_dismissed")
-    if _is_first_visit:
+    # First-run welcome banner — non-blocking, auto-dismisses after first interaction
+    if not st.session_state.get("first_run_dismissed"):
+        st.session_state["first_run_dismissed"] = True  # dismissed on next rerun
         st.markdown(
             "<div style='border-radius:10px;border:1px solid rgba(128,128,128,0.15);"
-            "padding:1.4rem 1.5rem;margin-bottom:1.2rem;background:rgba(128,128,128,0.03);'>"
-            "<div style='font-size:1rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.5rem;'>"
+            "padding:1.1rem 1.3rem;margin-bottom:1.2rem;background:rgba(128,128,128,0.03);'>"
+            "<div style='font-size:0.92rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:0.25rem;'>"
             "Welcome to GrowthCopilot</div>"
-            "<div style='font-size:0.83rem;opacity:0.6;line-height:1.65;margin-bottom:1rem;max-width:540px;'>"
-            "You're looking at a simulated product intelligence briefing. "
-            "The system has detected a signal in synthetic data and is recommending action — "
-            "exactly as it would with your real analytics."
+            "<div style='font-size:0.8rem;opacity:0.65;line-height:1.6;margin-bottom:0.85rem;'>"
+            "This is a live simulation of a product intelligence briefing — "
+            "the same analysis your real data would produce."
             "</div>"
-            "<div style='display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.2rem;'>"
-            "<div style='padding:0.75rem 0.9rem;border-radius:8px;border:1px solid rgba(128,128,128,0.15);'>"
-            "<div style='font-size:0.68rem;font-weight:600;opacity:0.45;text-transform:uppercase;"
-            "letter-spacing:0.08em;margin-bottom:0.25rem;'>See the full story</div>"
-            "<div style='font-size:0.79rem;opacity:0.6;line-height:1.5;'>"
-            "Enable <strong>Follow the story</strong> in the sidebar to walk through "
+            "<div style='display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;'>"
+            "<div style='padding:0.65rem 0.8rem;border-radius:8px;"
+            "border:1px solid rgba(59,130,246,0.25);background:rgba(59,130,246,0.04);"
+            "border-left:3px solid rgba(59,130,246,0.5);'>"
+            "<div style='font-size:0.72rem;font-weight:600;color:#3b82f6;"
+            "margin-bottom:0.2rem;'>↓ Follow the story</div>"
+            "<div style='font-size:0.78rem;opacity:0.75;line-height:1.45;'>"
+            "Toggle <strong>Demo mode</strong> in the sidebar to walk through "
             "a 28-day escalation arc step by step.</div></div>"
-            "<div style='padding:0.75rem 0.9rem;border-radius:8px;border:1px solid rgba(128,128,128,0.15);'>"
-            "<div style='font-size:0.68rem;font-weight:600;opacity:0.45;text-transform:uppercase;"
-            "letter-spacing:0.08em;margin-bottom:0.25rem;'>Try your own data</div>"
-            "<div style='font-size:0.79rem;opacity:0.6;line-height:1.5;'>"
-            "Click <strong>Connect Your Data</strong> in the sidebar to upload "
-            "a CSV from Mixpanel or Amplitude.</div></div>"
+            "<div style='padding:0.65rem 0.8rem;border-radius:8px;"
+            "border:1px solid rgba(22,163,74,0.25);background:rgba(22,163,74,0.04);"
+            "border-left:3px solid rgba(22,163,74,0.5);'>"
+            "<div style='font-size:0.72rem;font-weight:600;color:#16a34a;"
+            "margin-bottom:0.2rem;'>↑ Use your own data</div>"
+            "<div style='font-size:0.78rem;opacity:0.75;line-height:1.45;'>"
+            "Go to <strong>Connect Your Data</strong> to upload a CSV "
+            "from Mixpanel or Amplitude.</div></div>"
             "</div></div>",
             unsafe_allow_html=True,
         )
-        if st.button("Got it, show me the briefing", type="primary", key="dismiss_first_run"):
-            st.session_state["first_run_dismissed"] = True
-            st.rerun()
 
     # Data source banner
     if st.session_state.get("user_events"):
@@ -744,13 +743,11 @@ elif primary_cluster:
         )
     else:
         st.markdown(
-            "<div style='font-size:0.71rem;opacity:0.35;margin-bottom:0.3rem;'>"
+            "<div style='font-size:0.71rem;opacity:0.35;margin-bottom:0.6rem;'>"
             "Demo data &nbsp;·&nbsp; Synthetic events &nbsp;·&nbsp; Results are illustrative"
             "</div>",
             unsafe_allow_html=True,
         )
-        st.page_link("pages/connect.py", label="Connect your data →")
-        st.markdown("<div style='margin-bottom:0.5rem;'></div>", unsafe_allow_html=True)
 
     render_posture(surfaced_clusters, background_clusters, recently_resolved)
 
@@ -1042,7 +1039,7 @@ with col_btn:
     _cur_step = st.session_state.get("demo_step", 0)
     from growth_copilot_mvp.demo_flow import DEMO_STEP_COUNT as _dsc
     _at_end = _dm and _cur_step >= _dsc - 1
-    _btn_label = "Start over ↺" if _at_end else ("Next step →" if _dm else "Regenerate")
+    _btn_label = "Start over ↺" if _at_end else ("Next step →" if _dm else "New scenario")
     if st.button(_btn_label, type="primary", use_container_width=True):
         if _dm:
             from growth_copilot_mvp.demo_flow import get_demo_seed as _gds
@@ -1069,7 +1066,7 @@ with col_note:
             n   = len(st.session_state["user_events"])
             _meta = f"{src} · {n:,} events"
         else:
-            _meta = ""  # hide debug info from regular users
+            _meta = "Generates a new random scenario"
     st.markdown(
     f"<div style='font-family:ui-monospace,monospace;"
     f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
