@@ -696,15 +696,8 @@ elif primary_cluster:
     decision      = all_decisions[clustered.index(primary_cluster)]
     cons          = decision.get("consequences", {})
 
-    # First-run welcome overlay
-    # Show overlay only on true first visit — not after regenerate
-    _is_first_visit = (
-        not st.session_state.get("first_run_dismissed") and
-        not st.session_state.get("user_events") and
-        st.session_state.get("seed", 8) == 8 and
-        not st.session_state.get("demo_mode") and
-        st.session_state.get("_regen_count", 0) == 0
-    )
+    # First-run welcome overlay — show once per session until dismissed
+    _is_first_visit = not st.session_state.get("first_run_dismissed")
     if _is_first_visit:
         st.markdown(
             "<div style='border-radius:10px;border:1px solid rgba(128,128,128,0.15);"
