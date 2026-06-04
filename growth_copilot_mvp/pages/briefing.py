@@ -559,6 +559,18 @@ with st.sidebar:
     # Demo controls — above the fold, before scenario metadata
     if not st.session_state.get("user_events"):
         render_demo_controls(st.sidebar)
+    else:
+        st.sidebar.markdown(
+            "<div style='font-size:0.72rem;opacity:0.5;line-height:1.4;"
+            "padding:0.5rem 0 0.2rem;'>Using your data</div>",
+            unsafe_allow_html=True,
+        )
+        if st.sidebar.button("Clear data — return to demo", use_container_width=True):
+            st.session_state.pop("user_events", None)
+            st.session_state["seed"] = 42
+            st.session_state["demo_step"] = 0
+            st.session_state["first_run_dismissed"] = True
+            st.rerun()
 
     # Navigation group
     st.markdown("<div style='height:1px;background:rgba(128,128,128,0.1);margin:0.8rem 0;'></div>", unsafe_allow_html=True)
@@ -824,7 +836,7 @@ elif primary_cluster:
                 elif rm.get("worst_rate") is not None or rm.get("current_rate") is not None:
                     _metric_label = primary_cluster["title"] + " rate"
                 else:
-                    _metric_label = primary_cluster["title"]
+                    _metric_label = primary_cluster["title"].replace("_", " ").title()
                 st.markdown(
                     f"<div style='padding:0.3rem 0 0.6rem 0;'>"
                     f"<div style='font-size:0.65rem;font-weight:600;opacity:0.38;"
@@ -1059,17 +1071,4 @@ with col_btn:
 with col_note:
     _dm2 = st.session_state.get("demo_mode", False)
     if _dm2:
-        from growth_copilot_mvp.demo_flow import get_demo_seed as _gds2, get_demo_label as _gdl2
-        _meta = f"demo · {_gdl2(st.session_state.get('demo_step',0))}"
-    else:
-        if st.session_state.get("user_events"):
-            src = st.session_state.get("user_data_source", "your data")
-            n   = len(st.session_state["user_events"])
-            _meta = f"{src} · {n:,} events"
-        else:
-            _meta = "Generates a new random scenario"
-    st.markdown(
-    f"<div style='font-family:ui-monospace,monospace;"
-    f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
-    unsafe_allow_html=True,
-)
+        from growth_copilot_mvp.demo_flow import get_demo_seed as _gds2, get_demo_l

@@ -141,7 +141,11 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-from growth_copilot_mvp.archetypes import ARCHETYPES
+try:
+    from growth_copilot_mvp.archetypes import ARCHETYPES
+except Exception as _arch_err:
+    st.error(f"Could not load archetypes: {_arch_err}")
+    ARCHETYPES = {}
 for key, arch in ARCHETYPES.items():
     st.markdown(
         f"<div style='padding:0.6rem 0.8rem;background:rgba(128,128,128,0.05);border-radius:6px;"
