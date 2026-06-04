@@ -200,18 +200,20 @@ for code, name, desc in scenarios:
 st.markdown("---")
 
 st.markdown(
-    "<div style='padding:1.5rem 0 0.8rem;'>"
-    "<div style='font-size:1.05rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:0.35rem;'>"
-    "Stay updated</div>"
-    "<div style='font-size:0.82rem;opacity:0.45;line-height:1.6;max-width:440px;margin-bottom:1.1rem;'>"
-    "We're building direct integrations, a daily email digest, and more. "
-    "Leave your email and we'll let you know when new features ship."
+    "<div style='border-radius:10px;border:1px solid rgba(59,130,246,0.2);"
+    "background:rgba(59,130,246,0.04);padding:1.4rem 1.6rem;margin:0.5rem 0 1.2rem;'>"
+    "<div style='font-size:1.05rem;font-weight:700;letter-spacing:-0.025em;"
+    "margin-bottom:0.35rem;'>Stay in the loop</div>"
+    "<div style='font-size:0.85rem;line-height:1.65;max-width:480px;margin-bottom:1.1rem;'>"
+    "We're adding direct Mixpanel and Amplitude integrations, a daily email digest, "
+    "and team sharing. Leave your email and we'll let you know when new features ship."
     "</div></div>",
     unsafe_allow_html=True,
 )
 st.link_button(
-    "Get notified about updates →",
+    "Get early access — leave your email →",
     "https://form.typeform.com/to/r8s7hkGk",
+    type="primary",
 )
 
 st.markdown(

@@ -113,7 +113,8 @@ def funnel_drop_trend(funnel_table, source, step, baseline_rate):
     else:
         desc = f"Ongoing — day {days_active} of decline"
 
-    return {"days_active": days_active, "direction": direction, "description": desc}
+    return {"days_active": days_active, "direction": direction, "description": desc,
+            "series": [(str(d), round(v, 4)) for d, v in pts]}
 
 
 def source_divergence_trend(source_completion, source, baseline_rate):
@@ -135,7 +136,8 @@ def source_divergence_trend(source_completion, source, baseline_rate):
     else:
         desc = f"Ongoing — day {days_active} of divergence"
 
-    return {"days_active": days_active, "direction": direction, "description": desc}
+    return {"days_active": days_active, "direction": direction, "description": desc,
+            "series": [(str(d), round(v, 4)) for d, v in pts]}
 
 
 def anomaly_trend(daily_installs_map, expected):
@@ -159,7 +161,8 @@ def anomaly_trend(daily_installs_map, expected):
     else:
         desc = f"Ongoing — day {days_active} of anomaly"
 
-    return {"days_active": days_active, "direction": direction, "description": desc}
+    return {"days_active": days_active, "direction": direction, "description": desc,
+            "series": [(str(d), round(v)) for d, v in pts]}
 
 
 def attach_trend(insight, funnel_table=None, source_completion=None, daily_installs_map=None):
@@ -187,7 +190,7 @@ def attach_trend(insight, funnel_table=None, source_completion=None, daily_insta
         trend = anomaly_trend(daily_installs_map, expected)
 
     else:
-        trend = {"days_active": 1, "direction": "stable", "description": "First detected today"}
+        trend = {"days_active": 1, "direction": "stable", "description": "First detected today", "series": []}
 
     insight.trend = trend
     return insight

@@ -34,6 +34,21 @@ st.markdown("""
 
 
 st.title("System Calibration Console")
+
+# Soft access warning — non-blocking, just sets expectations for non-technical visitors
+with st.expander("⚙ Advanced configuration — who is this for?", expanded=False):
+    st.markdown(
+        "<div style='font-size:0.83rem;opacity:0.7;line-height:1.6;'>"
+        "This console is intended for <strong>technical users and builders</strong> "
+        "who want to inspect detector reliability, tune confidence weights, and review "
+        "alert quality over time.<br><br>"
+        "If you're here for the daily operational briefing — signal alerts, "
+        "recommendations, and trend analysis — head back to the main page."
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.page_link("pages/briefing.py", label="← Back to Daily Briefing")
+
 st.markdown(
     "<div style='color:inherit;font-size:0.85rem'>"
     "For builders — not the daily operational briefing. "
@@ -238,10 +253,6 @@ if all_sigs_log:
             st.rerun()
 
 # ---------------------------------------------------------------------------
-# Replay evaluator
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
 # Timeline replay
 # ---------------------------------------------------------------------------
 
@@ -285,7 +296,8 @@ if tl_data and tl_sum:
     if tl_sum.get("urgency_dist"):
         st.markdown("**Urgency distribution**")
         for urg, count in sorted(tl_sum["urgency_dist"].items()):
-            st.markdown(f"- {urg}: **{count}**")
+            urg_label = urg.replace("_", " ").title()
+            st.markdown(f"- {urg_label}: **{count}**")
 
     st.markdown("### Day-by-day view")
     tl_day_idx = st.slider("Select day", 0, len(tl_data)-1, st.session_state.get("tl_day", 0), key="tl_slider")
@@ -411,24 +423,4 @@ if scores:
         for t1, partners in co.items():
             for t2, count in partners.items():
                 if t1 < t2:
-                    st.markdown(f"- `{t1}` + `{t2}`: **{count}** runs")
-
-    st.markdown("### Signal consistency")
-    for title, pct in scores["primary_title_distribution"].items():
-        st.markdown(f"- {title}: **{pct*100:.0f}%** of alert runs")
-    st.markdown(f"- Causal links: **{scores['causal_link_rate']*100:.0f}%** of alert runs")
-
-    st.markdown("### Urgency distribution")
-    for urg, count in sorted(scores["urgency_distribution"].items()):
-        st.markdown(f"- {urg}: **{count}**")
-
-    warnings = scores.get("calibration_warnings", [])
-    if warnings:
-        st.markdown("### Calibration warnings")
-        for w in warnings:
-            st.warning(w)
-    else:
-        st.success("No calibration warnings.")
-
-    if scores["errors"] > 0:
-        st.error(f"{scores['errors']} seed(s) errored.")
+                    st.markdown(f"- `{t1}` + `{t2}`: {count}x")

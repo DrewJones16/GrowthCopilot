@@ -349,7 +349,7 @@ def render_narrative(record):
         )
 
 
-def render_why_surfaced(cluster, decision, inside_expander=False):
+def render_why_surfaced(cluster, decision):
     from growth_copilot_mvp.attention import (
         CONFIDENCE_WEIGHT, URGENCY_WEIGHT, PERSISTENCE_WEIGHT, AGREEMENT_WEIGHT,
         URGENCY_SCORES, _persistence_score,
@@ -400,17 +400,14 @@ def render_why_surfaced(cluster, decision, inside_expander=False):
                 unsafe_allow_html=True,
             )
 
-    if inside_expander:
-        st.markdown(
-            f"<div style='font-size:0.6rem;font-weight:600;opacity:0.35;"
-            f"text-transform:uppercase;letter-spacing:0.09em;margin:0.7rem 0 0.4rem;'>"
-            f"Surface score · {total_score}/100</div>",
-            unsafe_allow_html=True,
-        )
-        _why_table()
-    else:
-        with st.expander(f"Evidence · Surface score  ·  {total_score}/100", expanded=False):
-            _why_table()
+    # Always rendered inside the "Signal detail" expander — no standalone expander fallback
+    st.markdown(
+        f"<div style='font-size:0.6rem;font-weight:600;opacity:0.35;"
+        f"text-transform:uppercase;letter-spacing:0.09em;margin:0.7rem 0 0.4rem;'>"
+        f"Surface score · {total_score}/100</div>",
+        unsafe_allow_html=True,
+    )
+    _why_table()
 
 
 def render_action_card(decision):
@@ -481,23 +478,22 @@ def render_feedback(cluster_title: str):
                               label_visibility="collapsed", key=f"ru_{cluster_title}")
         with c4:
             st.markdown("<div style='margin-top:1.6rem;'></div>", unsafe_allow_html=True)
-            if st.button("Save", key=f"fb_{cluster_title}", use_container_width=True):
-                if sr == "Select…" and at == "Select…" and ru == "Select…":
-                    st.toast("Select at least one option before saving.", icon="⚠️")
-                else:
-                    kwargs = {}
-                    if sr == "Yes":       kwargs["signal_real"] = True
-                    elif sr == "No":      kwargs["signal_real"] = False
-                    if at not in ("Select…",): kwargs["action_taken"] = at.lower()
-                    if ru == "Yes":       kwargs["recommendation_useful"] = True
-                    elif ru == "Somewhat":kwargs["recommendation_useful"] = True
-                    elif ru == "No":      kwargs["recommendation_useful"] = False
-                    if at == "None":      increment_ignored(cluster_title)
-                    if kwargs:
-                        record_outcome(cluster_title, **kwargs)
-                        st.toast("Saved. Thanks for the feedback.", icon="✓")
-                    st.session_state[key] = True
-                    st.rerun()
+            _all_placeholder = (sr == "Select…" and at == "Select…" and ru == "Select…")
+            if st.button("Save", key=f"fb_{cluster_title}", use_container_width=True,
+                         disabled=_all_placeholder):
+                kwargs = {}
+                if sr == "Yes":       kwargs["signal_real"] = True
+                elif sr == "No":      kwargs["signal_real"] = False
+                if at not in ("Select…",): kwargs["action_taken"] = at.lower()
+                if ru == "Yes":       kwargs["recommendation_useful"] = True
+                elif ru == "Somewhat":kwargs["recommendation_useful"] = True
+                elif ru == "No":      kwargs["recommendation_useful"] = False
+                if at == "None":      increment_ignored(cluster_title)
+                if kwargs:
+                    record_outcome(cluster_title, **kwargs)
+                    st.toast("Saved. Thanks for the feedback.", icon="✓")
+                st.session_state[key] = True
+                st.rerun()
 
 
 def render_resolved(recently_resolved):
@@ -599,7 +595,7 @@ with st.sidebar:
             f"<div style='font-size:0.72rem;color:inherit;margin-top:0.3rem;'>"
             f"Key metric: {arch['key_metric']}</div>"
             f"<div style='font-size:0.72rem;color:inherit;margin-top:0.15rem;"
-            f"overflow-wrap:break-word;word-break:break-word;'>"
+            f"white-space:normal;overflow-wrap:break-word;word-break:break-word;'>"
             f"Sources: {', '.join(arch['sources'])}</div>",
             unsafe_allow_html=True,
         )
@@ -834,7 +830,7 @@ elif primary_cluster:
                 if rm.get("actual_installs") is not None:
                     _metric_label = "Daily installs"
                 elif rm.get("worst_rate") is not None or rm.get("current_rate") is not None:
-                    _metric_label = primary_cluster["title"] + " rate"
+                    _metric_label = primary_cluster["title"].replace("_", " ").title() + " rate"
                 else:
                     _metric_label = primary_cluster["title"].replace("_", " ").title()
                 st.markdown(
@@ -849,6 +845,24 @@ elif primary_cluster:
                     f"{headline_sub}</div></div>",
                     unsafe_allow_html=True,
                 )
+                # Sparkline — use trend series if available
+                _trend_obj = getattr(ins, "trend", {})
+                _spark_pts = _trend_obj.get("series", [])
+                if len(_spark_pts) >= 3:
+                    import pandas as _pd
+                    _spark_df = _pd.DataFrame(_spark_pts, columns=["day", "value"])
+                    _spark_dir = _trend_obj.get("direction", "stable")
+                    _spark_color = (
+                        "#ef4444" if _spark_dir == "worsening"
+                        else "#22c55e" if _spark_dir == "recovering"
+                        else "#94a3b8"
+                    )
+                    st.line_chart(
+                        _spark_df.set_index("day")["value"],
+                        height=62,
+                        use_container_width=True,
+                        color=_spark_color,
+                    )
             else:
                 st.markdown(
                     f"<div style='font-size:0.87rem;color:inherit;padding:0.3rem 0;"
@@ -914,7 +928,7 @@ elif primary_cluster:
             "<div style='height:1px;background:rgba(128,128,128,0.1);margin:0.8rem 0 0.4rem;'></div>",
             unsafe_allow_html=True,
         )
-        render_why_surfaced(primary_cluster, decision, inside_expander=True)
+        render_why_surfaced(primary_cluster, decision)
 
     if top_hypothesis:
         with st.expander("Likely cause", expanded=True):
@@ -1071,4 +1085,17 @@ with col_btn:
 with col_note:
     _dm2 = st.session_state.get("demo_mode", False)
     if _dm2:
-        from growth_copilot_mvp.demo_flow import get_demo_seed as _gds2, get_demo_l
+        from growth_copilot_mvp.demo_flow import get_demo_seed as _gds2, get_demo_label as _gdl2
+        _meta = f"demo · {_gdl2(st.session_state.get('demo_step',0))}"
+    else:
+        if st.session_state.get("user_events"):
+            src = st.session_state.get("user_data_source", "your data")
+            n   = len(st.session_state["user_events"])
+            _meta = f"{src} · {n:,} events"
+        else:
+            _meta = "Generates a new random scenario"
+    st.markdown(
+    f"<div style='font-family:ui-monospace,monospace;"
+    f"font-size:0.67rem;opacity:0.32;padding-top:0.65rem;'>{_meta}</div>",
+    unsafe_allow_html=True,
+)
