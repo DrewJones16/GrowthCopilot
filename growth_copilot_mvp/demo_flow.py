@@ -93,10 +93,16 @@ def render_demo_controls(sidebar_container) -> None:
             unsafe_allow_html=True,
         )
 
+        _was_demo = st.session_state.get("_prev_demo_mode", False)
         demo_mode = st.toggle(
             "Demo mode", key="demo_mode",
             value=st.session_state.get("demo_mode", False),
         )
+        # Reset to a clean seed when demo mode is turned off
+        if _was_demo and not demo_mode:
+            st.session_state["seed"] = 42
+            st.session_state["demo_step"] = 0
+        st.session_state["_prev_demo_mode"] = demo_mode
         st.markdown(
             "<div style='font-size:0.68rem;opacity:0.4;line-height:1.4;"
             "margin-top:0.1rem;margin-bottom:0.2rem;'>"

@@ -195,8 +195,6 @@ for code, name, desc in scenarios:
 
 st.markdown("---")
 
-st.markdown("<hr>", unsafe_allow_html=True)
-
 st.markdown(
     "<div style='padding:1.5rem 0 0.8rem;'>"
     "<div style='font-size:1.05rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:0.35rem;'>"

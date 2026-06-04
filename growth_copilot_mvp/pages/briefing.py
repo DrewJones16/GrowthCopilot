@@ -821,7 +821,7 @@ elif primary_cluster:
                 # Derive a short metric label from signal context
                 if rm.get("actual_installs") is not None:
                     _metric_label = "Daily installs"
-                elif rm.get("worst_rate") is not None:
+                elif rm.get("worst_rate") is not None or rm.get("current_rate") is not None:
                     _metric_label = primary_cluster["title"] + " rate"
                 else:
                     _metric_label = primary_cluster["title"]
@@ -832,7 +832,8 @@ elif primary_cluster:
                     f"{_metric_label}</div>"
                     f"<div style='font-size:2.8rem;font-weight:700;"
                     f"letter-spacing:-0.04em;line-height:1;'>{headline_val}</div>"
-                    f"<div style='font-size:0.74rem;opacity:0.4;margin-top:0.3rem;'>"
+                    f"<div style='font-size:0.74rem;opacity:0.4;margin-top:0.3rem;"
+                    f"white-space:normal;overflow-wrap:break-word;'>"
                     f"{headline_sub}</div></div>",
                     unsafe_allow_html=True,
                 )
