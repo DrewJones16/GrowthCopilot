@@ -845,24 +845,6 @@ elif primary_cluster:
                     f"{headline_sub}</div></div>",
                     unsafe_allow_html=True,
                 )
-                # Sparkline — use trend series if available
-                _trend_obj = getattr(ins, "trend", {})
-                _spark_pts = _trend_obj.get("series", [])
-                if len(_spark_pts) >= 3:
-                    import pandas as _pd
-                    _spark_df = _pd.DataFrame(_spark_pts, columns=["day", "value"])
-                    _spark_dir = _trend_obj.get("direction", "stable")
-                    _spark_color = (
-                        "#ef4444" if _spark_dir == "worsening"
-                        else "#22c55e" if _spark_dir == "recovering"
-                        else "#94a3b8"
-                    )
-                    st.line_chart(
-                        _spark_df.set_index("day")["value"],
-                        height=62,
-                        use_container_width=True,
-                        color=_spark_color,
-                    )
             else:
                 st.markdown(
                     f"<div style='font-size:0.87rem;color:inherit;padding:0.3rem 0;"
