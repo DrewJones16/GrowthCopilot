@@ -1,0 +1,91 @@
+{
+  "tiktok_activation_failure": {
+    "signal_id": "tiktok_activation_failure",
+    "title": "TikTok activation failure",
+    "first_seen": "2026-06-08",
+    "last_seen": "2026-06-08",
+    "days_active": 14,
+    "absent_runs": 0,
+    "severity_history": [
+      [
+        "2026-06-08",
+        "WATCH"
+      ],
+      [
+        "2026-06-08",
+        "WATCH"
+      ],
+      [
+        "2026-06-08",
+        "WATCH"
+      ]
+    ],
+    "direction_history": [
+      [
+        "2026-06-08",
+        "stable"
+      ],
+      [
+        "2026-06-08",
+        "stable"
+      ],
+      [
+        "2026-06-08",
+        "stable"
+      ]
+    ],
+    "confidence_history": [
+      [
+        "2026-06-08",
+        65
+      ],
+      [
+        "2026-06-08",
+        65
+      ],
+      [
+        "2026-06-08",
+        65
+      ]
+    ],
+    "strength_history": [
+      [
+        "2026-06-08",
+        79.5
+      ],
+      [
+        "2026-06-08",
+        95.8
+      ],
+      [
+        "2026-06-08",
+        100.0
+      ]
+    ],
+    "signal_strength": 100.0,
+    "is_surfaced": true,
+    "status": "active",
+    "resolution_date": null,
+    "recurrence_count": 0,
+    "ignored_count": 0,
+    "escalation_level": 2,
+    "peak_escalation_level": 2,
+    "is_new_today": false,
+    "narrative": "Active since 2026-06-08",
+    "outcome": {
+      "signal_real": null,
+      "severity_accurate": null,
+      "self_resolved": null,
+      "recommendation_followed": null,
+      "recommendation_useful": null,
+      "action_taken": null,
+      "issue_confirmed": null,
+      "time_to_resolution": null,
+      "business_impact": null,
+      "operator_feedback": "",
+      "recorded_at": null,
+      "detector_type": null
+    },
+    "outcome_history": []
+  }
+}
