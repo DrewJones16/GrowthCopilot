@@ -92,6 +92,14 @@ st.markdown("""
     html { overflow: auto !important; }
     .main { overflow: auto !important; }
 
+    /* Remove focus ring on expander headers */
+    .streamlit-expanderHeader:focus,
+    .streamlit-expanderHeader:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: transparent !important;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
